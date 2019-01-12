@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 
-class App extends Component {
+class Test extends Component {
   render() {
     return (
       <div className="App">
@@ -22,4 +24,25 @@ class App extends Component {
   }
 }
 
-export default App;
+class App extends Component {
+  render() {
+    return (
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/auth" component={Test} />
+
+          <Redirect from="/*" to="/home" />
+        </Switch>
+      </BrowserRouter>
+    );
+  }
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  {}
+)(App);
