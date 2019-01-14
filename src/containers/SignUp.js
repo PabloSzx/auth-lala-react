@@ -10,7 +10,7 @@ class SignUp extends Component {
     this.state = {
       name: "",
       email: "",
-      password: "",
+      password: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -33,7 +33,7 @@ class SignUp extends Component {
       <Form onSubmit={this.handleSubmit}>
         <Form.Group>
           <Form.Field>
-            <label>Usuario</label>
+            <label>Correo</label>
             <Input
               name="email"
               placeholder="Correo"
@@ -63,14 +63,14 @@ class SignUp extends Component {
           </Form.Field>
         </Form.Group>
 
-        <Form.Button color="blue">Login</Form.Button>
+        <Form.Button color="blue">Registrar</Form.Button>
       </Form>
     );
   }
 }
 
 const mapStateToProps = ({ auth }) => ({
-  auth,
+  auth
 });
 
 const mapDispatchToProps = { signupUser };

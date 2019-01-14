@@ -66,7 +66,7 @@ class Auth extends Component {
 }
 
 const mapStateToProps = ({ auth }) => ({
-  auth,
+  auth
 });
 
 const mapDispatchToProps = { loginUser, loginUserNoSession };

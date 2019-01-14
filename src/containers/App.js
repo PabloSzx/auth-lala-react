@@ -40,6 +40,7 @@ class App extends Component {
           <Route exact path="/auth" component={Auth} />
           <Route exact path="/logout" component={Logout} />
           <Route exact path="/signup" component={SignUp} />
+          <Redirect from="/*" to="/auth" />
         </Switch>
       </BrowserRouter>
     );
