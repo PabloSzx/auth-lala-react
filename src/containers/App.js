@@ -34,7 +34,6 @@ class App extends Component {
   };
 
   render() {
-    const { auth } = this.props;
     return (
       <BrowserRouter>
         <Switch>

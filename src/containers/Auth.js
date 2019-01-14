@@ -29,7 +29,6 @@ class Auth extends Component {
 
   render() {
     const { username, password, session } = this.state;
-    const { auth } = this.props;
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Group>
