@@ -6,7 +6,7 @@ class Auth extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { username: "", password: "", remember: false, session: true };
+    this.state = { email: "", password: "", remember: false, session: true };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -14,13 +14,13 @@ class Auth extends Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-    const { username, password, session } = this.state;
+    const { email, password, session } = this.state;
 
     console.log("session es ", session);
     if (session) {
-      this.props.loginUser({ username, password });
+      this.props.loginUser({ email, password });
     } else {
-      this.props.loginUserNoSession({ username, password });
+      this.props.loginUserNoSession({ email, password });
     }
   }
   handleChange(event) {
@@ -28,17 +28,17 @@ class Auth extends Component {
   }
 
   render() {
-    const { username, password, session } = this.state;
+    const { email, password, session } = this.state;
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Group>
           <Form.Field>
-            <label>Usuario</label>
+            <label>Correo</label>
             <Input
-              name="username"
-              placeholder="Usuario"
+              name="email"
+              placeholder="Correo"
               onChange={this.handleChange}
-              value={username}
+              value={email}
             />
           </Form.Field>
           <Form.Field>

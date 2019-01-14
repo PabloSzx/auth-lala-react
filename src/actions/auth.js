@@ -9,8 +9,8 @@ export const fetchUser = () => async dispatch => {
   });
 };
 
-export const loginUser = ({ username, password }) => async dispatch => {
-  const res = await axios.post("/auth/login", { username, password });
+export const loginUser = ({ email, password }) => async dispatch => {
+  const res = await axios.post("/auth/login", { email, password });
   dispatch({
     type: LOGIN_USER,
     payload: res.data,
@@ -18,11 +18,11 @@ export const loginUser = ({ username, password }) => async dispatch => {
 };
 
 export const loginUserNoSession = ({
-  username,
+  email,
   password,
 }) => async dispatch => {
   const res = await axios.post("/auth/login/no_session", {
-    username,
+    email,
     password,
   });
   dispatch({
