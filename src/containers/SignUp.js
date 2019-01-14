@@ -1,12 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Form, Input, Checkbox } from "semantic-ui-react";
-import { loginUser, loginUserNoSession } from "../actions/auth";
-class Auth extends Component {
+import { Form, Input } from "semantic-ui-react";
+import { signupUser } from "../actions/auth";
+
+class SignUp extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { username: "", password: "", remember: false, session: true };
+    this.state = {
+      name: "",
+      email: "",
+      password: "",
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -14,33 +19,38 @@ class Auth extends Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-    const { username, password, session } = this.state;
+    const { email, name, password } = this.state;
 
-    console.log("session es ", session);
-    if (session) {
-      this.props.loginUser({ username, password });
-    } else {
-      this.props.loginUserNoSession({ username, password });
-    }
+    this.props.signupUser({ email, name, password });
   }
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
 
   render() {
-    const { username, password, session } = this.state;
+    const { email, password, name } = this.state;
     return (
       <Form onSubmit={this.handleSubmit}>
         <Form.Group>
           <Form.Field>
             <label>Usuario</label>
             <Input
-              name="username"
-              placeholder="Usuario"
+              name="email"
+              placeholder="Correo"
               onChange={this.handleChange}
-              value={username}
+              value={email}
             />
           </Form.Field>
+          <Form.Field>
+            <label>Nombre</label>
+            <Input
+              name="name"
+              placeholder="Nombre"
+              onChange={this.handleChange}
+              value={name}
+            />
+          </Form.Field>
+
           <Form.Field>
             <label>Contraseña</label>
             <Input
@@ -53,12 +63,6 @@ class Auth extends Component {
           </Form.Field>
         </Form.Group>
 
-        <Checkbox
-          label="Mantenerse conectado"
-          onChange={() => this.setState({ session: !session })}
-          checked={session}
-        />
-
         <Form.Button color="blue">Login</Form.Button>
       </Form>
     );
@@ -69,9 +73,9 @@ const mapStateToProps = ({ auth }) => ({
   auth,
 });
 
-const mapDispatchToProps = { loginUser, loginUserNoSession };
+const mapDispatchToProps = { signupUser };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Auth);
+)(SignUp);

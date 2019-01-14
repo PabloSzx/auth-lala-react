@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FETCH_USER, LOGIN_USER, LOGOUT_USER, SIGNUP_USER } from "../types";
+import { FETCH_USER, LOGIN_USER, LOGOUT_USER } from "../types";
 
 export const fetchUser = () => async dispatch => {
   const res = await axios.post("/auth/current_user");
@@ -9,7 +9,7 @@ export const fetchUser = () => async dispatch => {
   });
 };
 
-export const loginUser = (username, password) => async dispatch => {
+export const loginUser = ({ username, password }) => async dispatch => {
   const res = await axios.post("/auth/login", { username, password });
   dispatch({
     type: LOGIN_USER,
@@ -17,7 +17,10 @@ export const loginUser = (username, password) => async dispatch => {
   });
 };
 
-export const loginUserNoSession = (username, password) => async dispatch => {
+export const loginUserNoSession = ({
+  username,
+  password,
+}) => async dispatch => {
   const res = await axios.post("/auth/login/no_session", {
     username,
     password,
@@ -35,15 +38,17 @@ export const logoutUser = () => async dispatch => {
   });
 };
 
-export const signupUser = (username, password, name) => async dispatch => {
+export const signupUser = ({ email, name, password }) => async dispatch => {
   const res = await axios.post("/auth/signup", {
-    username,
-    password,
+    email,
     name,
+    password,
   });
 
+  console.log("res", res);
+
   dispatch({
-    type: SIGNUP_USER,
+    type: LOGIN_USER,
     payload: res.data,
   });
 };
