@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Form, Input, Checkbox } from "semantic-ui-react";
+import sha1 from "crypto-js/sha1";
 import { loginUser, loginUserNoSession } from "../actions/auth";
+
 class Auth extends Component {
   constructor(props) {
     super(props);
@@ -14,8 +16,12 @@ class Auth extends Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-    const { email, password, session } = this.state;
+    let { email, password, session } = this.state;
 
+    email = email.trim();
+    password = sha1(password)
+      .toString()
+      .trim();
     console.log("session es ", session);
     if (session) {
       this.props.loginUser({ email, password });
@@ -66,7 +72,7 @@ class Auth extends Component {
 }
 
 const mapStateToProps = ({ auth }) => ({
-  auth
+  auth,
 });
 
 const mapDispatchToProps = { loginUser, loginUserNoSession };

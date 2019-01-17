@@ -171,7 +171,7 @@ class SignUp extends Component {
       name,
       valid,
       begin,
-      warning,
+      // warning,
       success,
       error,
     } = this.state;
@@ -183,15 +183,6 @@ class SignUp extends Component {
         error={error}
       >
         <Form.Group>
-          <Form.Field error={begin ? false : !valid.email.all}>
-            <label>Correo</label>
-            <Input
-              name="email"
-              placeholder="Correo"
-              onChange={this.handleChange}
-              value={email}
-            />
-          </Form.Field>
           <Form.Field error={begin ? false : !valid.name.all}>
             <label>Nombre</label>
             <Input
@@ -199,6 +190,16 @@ class SignUp extends Component {
               placeholder="Nombre"
               onChange={this.handleChange}
               value={name}
+            />
+          </Form.Field>
+
+          <Form.Field error={begin ? false : !valid.email.all}>
+            <label>Correo</label>
+            <Input
+              name="email"
+              placeholder="Correo"
+              onChange={this.handleChange}
+              value={email}
             />
           </Form.Field>
 
@@ -308,6 +309,7 @@ class SignUp extends Component {
                                 a.push(
                                   <Message.Item content="La contraseña debe contener al menos un número." />
                                 );
+                                break;
                               }
                               default:
                             }
@@ -318,6 +320,7 @@ class SignUp extends Component {
                     );
                     break;
                   }
+                  default:
                 }
                 return acum;
               },
