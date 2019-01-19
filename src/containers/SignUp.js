@@ -1,11 +1,20 @@
-import { reduce, cloneDeep } from "lodash";
+import { reduce, cloneDeep, isEmpty } from "lodash";
 import React, { Component } from "react";
+import AutosizeInput from "react-input-autosize";
 import { connect } from "react-redux";
-import { Form, Input, Message } from "semantic-ui-react";
+import { Link } from "react-router-dom";
+import { Form, Message, Grid, Segment } from "semantic-ui-react";
 import validator, { trim } from "validator";
 import sha1 from "crypto-js/sha1";
 import { set } from "lodash/fp";
-import { signupUser } from "../actions/auth";
+import { signupUser, clearError } from "../actions";
+import {
+  LOADING,
+  INVALID_PASSWORD,
+  INVALID_EMAIL,
+  INVALID_NAME,
+  USED_EMAIL,
+} from "../types";
 
 class SignUp extends Component {
   constructor(props) {
@@ -15,9 +24,6 @@ class SignUp extends Component {
       name: "",
       email: "",
       password: "",
-      warning: false,
-      success: false,
-      error: false,
       begin: true,
       valid: {
         all: false,
@@ -68,11 +74,7 @@ class SignUp extends Component {
   }
 
   validateEmail(email = this.state.email) {
-    const state = cloneDeep(this.state);
-
-    state.valid.email.all = validator.isEmail(email);
-
-    return state;
+    return set("valid.email.all", validator.isEmail(email), this.state);
   }
 
   validateName(name = this.state.name) {
@@ -117,7 +119,6 @@ class SignUp extends Component {
       } else {
         const { name, password, email } = this.state.valid;
         const valid = password.all && name.all && email.all;
-
         this.setState(set(["valid", "all"], valid, this.state));
 
         resolve(valid);
@@ -145,19 +146,21 @@ class SignUp extends Component {
       password: sha1(trim(password)).toString(),
     });
   }
-  handleChange(event) {
-    const name = event.target.name;
-    const value = event.target.value;
+  handleChange({ target: { name, value } }) {
+    if (!isEmpty(this.props.error)) {
+      this.props.clearError();
+    }
+
     this.setState({ [name]: value, begin: false }, () => {
       switch (name) {
         case "email":
-          this.setState(this.validateEmail(value));
+          this.setState(this.validateEmail(value), () => this.validateAll());
           break;
         case "name":
-          this.setState(this.validateName(value));
+          this.setState(this.validateName(value), () => this.validateAll());
           break;
         case "password":
-          this.setState(this.validatePassword(value));
+          this.setState(this.validatePassword(value), () => this.validateAll());
           break;
         default:
       }
@@ -165,180 +168,235 @@ class SignUp extends Component {
   }
 
   render() {
-    const {
-      email,
-      password,
-      name,
-      valid,
-      begin,
-      // warning,
-      success,
-      error,
-    } = this.state;
+    const { email, password, name, valid } = this.state;
+    const { auth, error } = this.props;
     return (
-      <Form
-        onSubmit={this.handleSubmit}
-        warning={!valid.all}
-        success={success}
-        error={error}
-      >
-        <Form.Group>
-          <Form.Field error={begin ? false : !valid.name.all}>
-            <label>Nombre</label>
-            <Input
-              name="name"
-              placeholder="Nombre"
-              onChange={this.handleChange}
-              value={name}
-            />
-          </Form.Field>
+      <Grid centered padded>
+        <Grid.Row />
 
-          <Form.Field error={begin ? false : !valid.email.all}>
-            <label>Correo</label>
-            <Input
-              name="email"
-              placeholder="Correo"
-              onChange={this.handleChange}
-              value={email}
-            />
-          </Form.Field>
+        <Form
+          onSubmit={this.handleSubmit}
+          warning={!valid.all}
+          error={!isEmpty(error)}
+          loading={auth === LOADING}
+          size="huge"
+        >
+          <Segment basic size="massive">
+            <Form.Field>
+              <label>Nombre</label>
+              <AutosizeInput
+                name="name"
+                placeholder="Nombre"
+                onChange={this.handleChange}
+                value={name}
+              />
+            </Form.Field>
 
-          <Form.Field error={begin ? false : !valid.password.all}>
-            <label>Contraseña</label>
-            <Input
-              name="password"
-              type="password"
-              placeholder="Contraseña"
-              onChange={this.handleChange}
-              value={password}
-            />
-          </Form.Field>
-        </Form.Group>
+            <Form.Field>
+              <label>Correo</label>
+              <AutosizeInput
+                name="email"
+                placeholder="correo@uach.cl"
+                onChange={this.handleChange}
+                value={email}
+              />
+            </Form.Field>
 
-        <Form.Button color="blue">Registrar</Form.Button>
+            <Form.Field>
+              <label>Contraseña</label>
+              <AutosizeInput
+                name="password"
+                type="password"
+                placeholder="Contraseña"
+                onChange={this.handleChange}
+                value={password}
+              />
+            </Form.Field>
+          </Segment>
 
-        <Message
-          success
-          header="Form Completed"
-          content="You're all signed up for the newsletter"
-        />
-        <Message warning header="Precaución!">
-          <Message.List>
-            {reduce(
-              valid,
-              (acum, value, key) => {
-                switch (key) {
-                  case "name": {
-                    acum.push(
-                      ...reduce(
-                        value,
-                        (a, v, k) => {
-                          if (!v)
-                            switch (k) {
-                              case "all": {
-                                a.push(
-                                  <Message.Item content="Ingrese un nombre valido." />
-                                );
-                                break;
+          <Segment basic>
+            <Form.Button color="blue" size="huge" disabled={!valid.all}>
+              Registrar
+            </Form.Button>
+          </Segment>
+
+          <Segment basic>
+            <Link to="/auth">
+              <Form.Field>
+                <Form.Button size="huge" color="green">
+                  Volver
+                </Form.Button>
+              </Form.Field>
+            </Link>
+          </Segment>
+
+          <Message
+            success
+            header="Form Completed"
+            content="You're all signed up for the newsletter"
+          />
+          <Message warning>
+            <Message.Header>Precaución!</Message.Header>
+
+            <Message.List>
+              {reduce(
+                valid,
+                (acum, value, key) => {
+                  switch (key) {
+                    case "name": {
+                      acum.push(
+                        ...reduce(
+                          value,
+                          (a, v, k) => {
+                            if (!v)
+                              switch (k) {
+                                case "all": {
+                                  a.push(
+                                    <Message.Item
+                                      key={k + key}
+                                      content="Ingrese un nombre valido."
+                                    />
+                                  );
+                                  break;
+                                }
+                                default:
                               }
-                              default:
-                            }
-                          return a;
-                        },
-                        []
-                      )
-                    );
-                    break;
+                            return a;
+                          },
+                          []
+                        )
+                      );
+                      break;
+                    }
+                    case "email": {
+                      acum.push(
+                        ...reduce(
+                          value,
+                          (a, v, k) => {
+                            if (!v)
+                              switch (k) {
+                                case "all": {
+                                  a.push(
+                                    <Message.Item
+                                      key={k + key}
+                                      content="Ingrese un email valido."
+                                    />
+                                  );
+                                  break;
+                                }
+                                default:
+                              }
+                            return a;
+                          },
+                          []
+                        )
+                      );
+                      break;
+                    }
+                    case "password": {
+                      acum.push(
+                        ...reduce(
+                          value,
+                          (a, v, k) => {
+                            if (!v)
+                              switch (k) {
+                                case "length": {
+                                  a.push(
+                                    <Message.Item
+                                      key={k + key}
+                                      content="El largo de la contraseña tiene que ser de al menos 8 caracteres."
+                                    />
+                                  );
+                                  break;
+                                }
+                                case "specialSymbol": {
+                                  a.push(
+                                    <Message.Item
+                                      key={k + key}
+                                      content={`La contraseña debe contener al menos un caracter especial (~¡!$&+,:;=¿?@#|'<>.^*(){}"%-_).`}
+                                    />
+                                  );
+                                  break;
+                                }
+                                case "lowercase": {
+                                  a.push(
+                                    <Message.Item
+                                      key={k + key}
+                                      content="La contraseña debe contener al menos una letra minúscula."
+                                    />
+                                  );
+                                  break;
+                                }
+                                case "uppercase": {
+                                  a.push(
+                                    <Message.Item
+                                      key={k + key}
+                                      content="La contraseña debe contener al menos una letra mayúscula."
+                                    />
+                                  );
+                                  break;
+                                }
+                                case "number": {
+                                  a.push(
+                                    <Message.Item
+                                      key={k + key}
+                                      content="La contraseña debe contener al menos un número."
+                                    />
+                                  );
+                                  break;
+                                }
+                                default:
+                              }
+                            return a;
+                          },
+                          []
+                        )
+                      );
+                      break;
+                    }
+                    default:
                   }
-                  case "email": {
-                    acum.push(
-                      ...reduce(
-                        value,
-                        (a, v, k) => {
-                          if (!v)
-                            switch (k) {
-                              case "all": {
-                                a.push(
-                                  <Message.Item content="Ingrese un email valido." />
-                                );
-                                break;
-                              }
-                              default:
-                            }
-                          return a;
-                        },
-                        []
-                      )
-                    );
-                    break;
+                  return acum;
+                },
+                []
+              )}
+            </Message.List>
+          </Message>
+
+          <Message error>
+            <Message.Header>Error!</Message.Header>
+
+            <Message.List>
+              {reduce(
+                error,
+                (acum, value, key) => {
+                  switch (key) {
+                    case INVALID_PASSWORD:
+                    case INVALID_EMAIL:
+                    case INVALID_NAME:
+                    case USED_EMAIL:
+                      acum.push(<Message.Item key={key} content={value} />);
+                      break;
+                    default:
                   }
-                  case "password": {
-                    acum.push(
-                      ...reduce(
-                        value,
-                        (a, v, k) => {
-                          if (!v)
-                            switch (k) {
-                              case "length": {
-                                a.push(
-                                  <Message.Item content="El largo de la contraseña tiene que ser de al menos 8 caracteres." />
-                                );
-                                break;
-                              }
-                              case "specialSymbol": {
-                                a.push(
-                                  <Message.Item
-                                    content={`La contraseña debe contener al menos un caracter especial (~¡!$&+,:;=¿?@#|'<>.^*(){}"%-_).`}
-                                  />
-                                );
-                                break;
-                              }
-                              case "lowercase": {
-                                a.push(
-                                  <Message.Item content="La contraseña debe contener al menos una letra minúscula." />
-                                );
-                                break;
-                              }
-                              case "uppercase": {
-                                a.push(
-                                  <Message.Item content="La contraseña debe contener al menos una letra mayúscula." />
-                                );
-                                break;
-                              }
-                              case "number": {
-                                a.push(
-                                  <Message.Item content="La contraseña debe contener al menos un número." />
-                                );
-                                break;
-                              }
-                              default:
-                            }
-                          return a;
-                        },
-                        []
-                      )
-                    );
-                    break;
-                  }
-                  default:
-                }
-                return acum;
-              },
-              []
-            )}
-          </Message.List>
-        </Message>
-        <Message error header="Error!" list={["Error."]} />
-      </Form>
+                  return acum;
+                },
+                []
+              )}
+            </Message.List>
+          </Message>
+        </Form>
+      </Grid>
     );
   }
 }
 
-const mapStateToProps = ({ auth }) => ({
+const mapStateToProps = ({ auth, error }) => ({
   auth,
+  error,
 });
 
-const mapDispatchToProps = { signupUser };
+const mapDispatchToProps = { signupUser, clearError };
 
 export default connect(
   mapStateToProps,

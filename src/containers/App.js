@@ -1,3 +1,4 @@
+import { isEmpty, isString } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
@@ -24,7 +25,11 @@ class App extends Component {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    if (prevProps.auth !== this.props.auth && this.props.auth) {
+    if (
+      prevProps.auth !== this.props.auth &&
+      !isString(this.props.auth) &&
+      !isEmpty(this.props.auth)
+    ) {
       window.location.replace(
         process.env.NODE_ENV === "development"
           ? `http://${window.location.hostname}:8080/home`
