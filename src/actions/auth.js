@@ -17,10 +17,7 @@ export const loginUser = ({ email, password }) => async dispatch => {
   });
 };
 
-export const loginUserNoSession = ({
-  email,
-  password,
-}) => async dispatch => {
+export const loginUserNoSession = ({ email, password }) => async dispatch => {
   const res = await axios.post("/auth/login/no_session", {
     email,
     password,
@@ -51,4 +48,20 @@ export const signupUser = ({ email, name, password }) => async dispatch => {
     type: LOGIN_USER,
     payload: res.data,
   });
+};
+
+export const recoverPassword = ({
+  email,
+  password,
+  unlockKey,
+}) => async dispatch => {
+  const res = await axios.post("/auth/unlock", {
+    email,
+    password,
+    unlockKey,
+  });
+
+  console.log("res", res);
+
+  dispatch({ type: LOGIN_USER, payload: res.data });
 };

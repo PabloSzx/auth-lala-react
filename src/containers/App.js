@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { fetchUser, logoutUser } from "../actions";
-import { Auth, SignUp } from "./";
+import { Auth, SignUp, RecoverPassword } from "./";
 
 class LogoutComponent extends Component {
   componentWillMount() {
@@ -40,6 +40,11 @@ class App extends Component {
           <Route exact path="/auth" component={Auth} />
           <Route exact path="/logout" component={Logout} />
           <Route exact path="/signup" component={SignUp} />
+          <Route
+            exact
+            path="/unlock/:email/:unlockKey"
+            component={RecoverPassword}
+          />
           <Redirect from="/*" to="/auth" />
         </Switch>
       </BrowserRouter>
