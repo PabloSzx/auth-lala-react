@@ -1,9 +1,8 @@
 import { reduce, cloneDeep, isEmpty } from "lodash";
 import React, { Component } from "react";
-import AutosizeInput from "react-input-autosize";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { Form, Message, Grid, Segment } from "semantic-ui-react";
+import { Form, Message, Grid, Segment, Input } from "semantic-ui-react";
 import validator, { trim } from "validator";
 import sha1 from "crypto-js/sha1";
 import { set } from "lodash/fp";
@@ -24,6 +23,7 @@ class SignUp extends Component {
       name: "",
       email: "",
       password: "",
+      confirm_password: "",
       begin: true,
       valid: {
         all: false,
@@ -48,8 +48,14 @@ class SignUp extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  validatePassword(password = this.state.password) {
+  validatePassword(
+    password = this.state.password,
+    confirm_password = this.state.confirm_password
+  ) {
     const state = cloneDeep(this.state);
+
+    console.log("password :", password);
+    console.log("confirm_password :", confirm_password);
 
     const conditions = {
       length: () => validator.isLength(password, { min: 8, max: 100 }),
@@ -58,6 +64,7 @@ class SignUp extends Component {
       lowercase: () => validator.matches(password, /[a-z]/),
       uppercase: () => validator.matches(password, /[A-Z]/),
       number: () => validator.matches(password, /[0-9]/),
+      confirm_password: () => password === confirm_password,
     };
 
     state.valid.password.all = reduce(
@@ -145,6 +152,11 @@ class SignUp extends Component {
       name: trim(name),
       password: sha1(trim(password)).toString(),
     });
+
+    this.setState({
+      password: "",
+      confirm_password: "",
+    });
   }
   handleChange({ target: { name, value } }) {
     if (!isEmpty(this.props.error)) {
@@ -162,54 +174,68 @@ class SignUp extends Component {
         case "password":
           this.setState(this.validatePassword(value), () => this.validateAll());
           break;
+        case "confirm_password":
+          this.setState(this.validatePassword(this.state.password, value), () =>
+            this.validateAll()
+          );
+          break;
         default:
       }
     });
   }
 
   render() {
-    const { email, password, name, valid } = this.state;
+    const { email, password, name, valid, confirm_password } = this.state;
     const { auth, error } = this.props;
     return (
       <Grid centered padded>
         <Grid.Row />
-
         <Form
+          warning={false}
+          error={false}
           onSubmit={this.handleSubmit}
-          warning={!valid.all}
-          error={!isEmpty(error)}
           loading={auth === LOADING}
           size="huge"
         >
           <Segment basic size="massive">
-            <Form.Field>
+            <Form.Field error={!valid.name.all}>
               <label>Nombre</label>
-              <AutosizeInput
+              <Input
                 name="name"
+                // type="text"
                 placeholder="Nombre"
                 onChange={this.handleChange}
                 value={name}
               />
             </Form.Field>
-
-            <Form.Field>
+            <Form.Field error={!valid.email.all}>
               <label>Correo</label>
-              <AutosizeInput
+              <Input
                 name="email"
+                type="email"
                 placeholder="correo@uach.cl"
                 onChange={this.handleChange}
                 value={email}
               />
             </Form.Field>
-
-            <Form.Field>
+            <Form.Field error={!valid.password.all}>
               <label>Contraseña</label>
-              <AutosizeInput
+              <Input
                 name="password"
                 type="password"
                 placeholder="Contraseña"
                 onChange={this.handleChange}
                 value={password}
+              />
+            </Form.Field>
+            <Form.Field error={!valid.password.all}>
+              <label>Repita su contraseña</label>
+              <Input
+                name="confirm_password"
+                type="password"
+                placeholder="contraseña"
+                onChange={this.handleChange}
+                value={confirm_password}
               />
             </Form.Field>
           </Segment>
@@ -229,13 +255,9 @@ class SignUp extends Component {
               </Form.Field>
             </Link>
           </Segment>
-
-          <Message
-            success
-            header="Form Completed"
-            content="You're all signed up for the newsletter"
-          />
-          <Message warning>
+        </Form>
+        <Grid.Row>
+          <Message warning hidden={valid.all}>
             <Message.Header>Precaución!</Message.Header>
 
             <Message.List>
@@ -345,6 +367,13 @@ class SignUp extends Component {
                                   );
                                   break;
                                 }
+                                case "confirm_password": {
+                                  a.push(
+                                    <Message.Item content="Debe repetir su contraseña correctamente." />
+                                  );
+                                  break;
+                                }
+
                                 default:
                               }
                             return a;
@@ -362,8 +391,9 @@ class SignUp extends Component {
               )}
             </Message.List>
           </Message>
-
-          <Message error>
+        </Grid.Row>
+        <Grid.Row>
+          <Message error hidden={isEmpty(error)}>
             <Message.Header>Error!</Message.Header>
 
             <Message.List>
@@ -385,7 +415,7 @@ class SignUp extends Component {
               )}
             </Message.List>
           </Message>
-        </Form>
+        </Grid.Row>
       </Grid>
     );
   }

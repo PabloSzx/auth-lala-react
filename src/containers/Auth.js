@@ -1,9 +1,15 @@
 import { isEmpty, reduce } from "lodash";
 import React, { Component } from "react";
-import AutosizeInput from "react-input-autosize";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { Form, Checkbox, Grid, Segment, Message } from "semantic-ui-react";
+import {
+  Form,
+  Checkbox,
+  Grid,
+  Segment,
+  Message,
+  Input,
+} from "semantic-ui-react";
 import { isEmail, trim, isLength } from "validator";
 import sha1 from "crypto-js/sha1";
 import { set } from "lodash/fp";
@@ -52,6 +58,10 @@ class Auth extends Component {
     } else {
       this.props.loginUserNoSession({ email, password });
     }
+
+    this.setState({
+      password: "",
+    });
   }
 
   validateEmail(email = this.state.email) {
@@ -93,10 +103,10 @@ class Auth extends Component {
     this.setState({ [name]: value }, () => {
       switch (name) {
         case "email":
-          this.setState(this.validateEmail(value));
+          this.setState(this.validateEmail(value), () => this.validateAll());
           break;
         case "password":
-          this.setState(this.validatePassword(value));
+          this.setState(this.validatePassword(value), () => this.validateAll());
           break;
         default:
       }
@@ -106,7 +116,7 @@ class Auth extends Component {
   render() {
     const { email, password, session, valid } = this.state;
     const { error, auth } = this.props;
-
+    console.log("this.state", this.state.valid);
     return (
       <Grid centered padded>
         <Grid.Row />
@@ -114,14 +124,15 @@ class Auth extends Component {
           size="huge"
           onSubmit={this.handleSubmit}
           error={!isEmpty(error)}
-          warning={!valid.email.all}
           loading={auth === LOADING}
+          warning={!valid.all}
         >
           <Segment size="massive" basic>
             <Form.Field>
               <label>Correo</label>
-              <AutosizeInput
+              <Input
                 name="email"
+                type="email"
                 placeholder="email@uach.cl"
                 onChange={this.handleChange}
                 value={email}
@@ -129,7 +140,7 @@ class Auth extends Component {
             </Form.Field>
             <Form.Field>
               <label>Contraseña</label>
-              <AutosizeInput
+              <Input
                 name="password"
                 type="password"
                 placeholder="contraseña"
@@ -150,7 +161,7 @@ class Auth extends Component {
           </Segment>
           <Segment basic>
             <Form.Field>
-              <Form.Button size="huge" color="blue" disabled={!valid.email.all}>
+              <Form.Button size="huge" color="blue" disabled={!valid.all}>
                 Login
               </Form.Button>
             </Form.Field>
@@ -165,100 +176,101 @@ class Auth extends Component {
               </Form.Field>
             </Link>
           </Segment>
-
-          <Form.Field>
-            <Message error>
-              <Message.Header>Error!</Message.Header>
-
-              <Message.List>
-                {reduce(
-                  error,
-                  (acum, value, key) => {
-                    switch (key) {
-                      case INVALID_INFO:
-                      case WRONG_EMAIL:
-                      case WRONG_PASSWORD:
-                      case LOCKED_USER:
-                        acum.push(<Message.Item key={key} content={value} />);
-                        break;
-                      default:
-                    }
-                    return acum;
-                  },
-                  []
-                )}
-              </Message.List>
-            </Message>
-
-            <Message warning>
-              <Message.Header>Precaución!</Message.Header>
-
-              <Message.List>
-                {reduce(
-                  valid,
-                  (acum, value, key) => {
-                    switch (key) {
-                      case "email": {
-                        acum.push(
-                          ...reduce(
-                            value,
-                            (a, v, k) => {
-                              if (!v)
-                                switch (k) {
-                                  case "all": {
-                                    a.push(
-                                      <Message.Item
-                                        key={k + key}
-                                        content="Ingrese un email valido."
-                                      />
-                                    );
-                                    break;
-                                  }
-                                  default:
-                                }
-                              return a;
-                            },
-                            []
-                          )
-                        );
-                        break;
-                      }
-                      case "password": {
-                        acum.push(
-                          ...reduce(
-                            value,
-                            (a, v, k) => {
-                              if (!v)
-                                switch (k) {
-                                  case "all": {
-                                    a.push(
-                                      <Message.Item
-                                        key={k + key}
-                                        content="El largo de la contraseña tiene que ser de al menos 8 caracteres."
-                                      />
-                                    );
-                                    break;
-                                  }
-                                  default:
-                                }
-                              return a;
-                            },
-                            []
-                          )
-                        );
-                        break;
-                      }
-
-                      default:
-                    }
-                    return acum;
-                  },
-                  []
-                )}
-              </Message.List>
-            </Message>
-          </Form.Field>
         </Form>
+
+        <Grid.Row>
+          <Message error hidden={isEmpty(error)}>
+            <Message.Header>Error!</Message.Header>
+
+            <Message.List>
+              {reduce(
+                error,
+                (acum, value, key) => {
+                  switch (key) {
+                    case INVALID_INFO:
+                    case WRONG_EMAIL:
+                    case WRONG_PASSWORD:
+                    case LOCKED_USER:
+                      acum.push(<Message.Item key={key} content={value} />);
+                      break;
+                    default:
+                  }
+                  return acum;
+                },
+                []
+              )}
+            </Message.List>
+          </Message>
+        </Grid.Row>
+        <Grid.Row>
+          <Message warning hidden={valid.all}>
+            <Message.Header>Precaución!</Message.Header>
+
+            <Message.List>
+              {reduce(
+                valid,
+                (acum, value, key) => {
+                  switch (key) {
+                    case "email": {
+                      acum.push(
+                        ...reduce(
+                          value,
+                          (a, v, k) => {
+                            if (!v)
+                              switch (k) {
+                                case "all": {
+                                  a.push(
+                                    <Message.Item
+                                      key={k + key}
+                                      content="Ingrese un email valido."
+                                    />
+                                  );
+                                  break;
+                                }
+                                default:
+                              }
+                            return a;
+                          },
+                          []
+                        )
+                      );
+                      break;
+                    }
+                    case "password": {
+                      acum.push(
+                        ...reduce(
+                          value,
+                          (a, v, k) => {
+                            if (!v)
+                              switch (k) {
+                                case "all": {
+                                  a.push(
+                                    <Message.Item
+                                      key={k + key}
+                                      content="El largo de la contraseña tiene que ser de al menos 8 caracteres."
+                                    />
+                                  );
+                                  break;
+                                }
+                                default:
+                              }
+                            return a;
+                          },
+                          []
+                        )
+                      );
+                      break;
+                    }
+
+                    default:
+                  }
+                  return acum;
+                },
+                []
+              )}
+            </Message.List>
+          </Message>
+        </Grid.Row>
       </Grid>
     );
   }

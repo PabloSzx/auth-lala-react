@@ -1,8 +1,7 @@
 import { reduce, cloneDeep, isEmpty } from "lodash";
 import React, { Component } from "react";
-import AutosizeInput from "react-input-autosize";
 import { connect } from "react-redux";
-import { Form, Message, Grid, Segment } from "semantic-ui-react";
+import { Form, Message, Grid, Segment, Input } from "semantic-ui-react";
 import validator, { trim } from "validator";
 import sha1 from "crypto-js/sha1";
 import { recoverPassword, clearError } from "../actions/auth";
@@ -14,6 +13,7 @@ class RecoverPassword extends Component {
 
     this.state = {
       password: "",
+      confirm_password: "",
       valid: {
         password: {
           all: false,
@@ -30,7 +30,10 @@ class RecoverPassword extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  validatePassword(password = this.state.password) {
+  validatePassword(
+    password = this.state.password,
+    confirm_password = this.state.confirm_password
+  ) {
     const state = cloneDeep(this.state);
 
     const conditions = {
@@ -40,6 +43,7 @@ class RecoverPassword extends Component {
       lowercase: () => validator.matches(password, /[a-z]/),
       uppercase: () => validator.matches(password, /[A-Z]/),
       number: () => validator.matches(password, /[0-9]/),
+      confirm_password: () => password === confirm_password,
     };
 
     state.valid.password.all = reduce(
@@ -73,6 +77,11 @@ class RecoverPassword extends Component {
       unlockKey,
       password: sha1(trim(password)).toString(),
     });
+
+    this.setState({
+      password: "",
+      confirm_password: "",
+    });
   }
   handleChange({ target: { name, value } }) {
     if (!isEmpty(this.props.error)) {
@@ -83,13 +92,16 @@ class RecoverPassword extends Component {
         case "password":
           this.setState(this.validatePassword(value));
           break;
+        case "confirm_password":
+          this.setState(this.validatePassword(this.state.password, value));
+          break;
         default:
       }
     });
   }
 
   render() {
-    const { password, valid } = this.state;
+    const { password, valid, confirm_password } = this.state;
     const { email } = this.props.match.params;
     const { error, auth } = this.props;
 
@@ -110,12 +122,24 @@ class RecoverPassword extends Component {
             <Segment size="massive" basic>
               <Form.Field error={!valid.password.all}>
                 <label>Contraseña</label>
-                <AutosizeInput
+                <Input
                   name="password"
                   type="password"
-                  placeholder="Contraseña"
+                  placeholder="contraseña"
                   onChange={this.handleChange}
                   value={password}
+                />
+              </Form.Field>
+            </Segment>
+            <Segment size="massive" basic>
+              <Form.Field error={!valid.password.all}>
+                <label>Repita su contraseña</label>
+                <Input
+                  name="confirm_password"
+                  type="password"
+                  placeholder="contraseña"
+                  onChange={this.handleChange}
+                  value={confirm_password}
                 />
               </Form.Field>
             </Segment>
@@ -126,87 +150,73 @@ class RecoverPassword extends Component {
                 color="blue"
                 disabled={!valid.password.all}
               >
-                Recuperar contraseña
+                Recuperar cuenta
               </Form.Button>
             </Segment>
-
-            <Segment size="massive" basic>
-              <Message warning header="Precaución!">
-                <Message.List>
-                  {reduce(
-                    valid,
-                    (acum, value, key) => {
-                      switch (key) {
-                        case "password": {
-                          acum.push(
-                            ...reduce(
-                              value,
-                              (a, v, k) => {
-                                if (!v)
-                                  switch (k) {
-                                    case "length": {
-                                      a.push(
-                                        <Message.Item content="El largo de la contraseña tiene que ser de al menos 8 caracteres." />
-                                      );
-                                      break;
-                                    }
-                                    case "specialSymbol": {
-                                      a.push(
-                                        <Message.Item
-                                          content={`La contraseña debe contener al menos un caracter especial (~¡!$&+,:;=¿?@#|'<>.^*(){}"%-_).`}
-                                        />
-                                      );
-                                      break;
-                                    }
-                                    case "lowercase": {
-                                      a.push(
-                                        <Message.Item content="La contraseña debe contener al menos una letra minúscula." />
-                                      );
-                                      break;
-                                    }
-                                    case "uppercase": {
-                                      a.push(
-                                        <Message.Item content="La contraseña debe contener al menos una letra mayúscula." />
-                                      );
-                                      break;
-                                    }
-                                    case "number": {
-                                      a.push(
-                                        <Message.Item content="La contraseña debe contener al menos un número." />
-                                      );
-                                      break;
-                                    }
-                                    default:
-                                  }
-                                return a;
-                              },
-                              []
-                            )
-                          );
-                          break;
-                        }
-                        default:
-                      }
-                      return acum;
-                    },
-                    []
-                  )}
-                </Message.List>
-              </Message>
-            </Segment>
-
-            <Message error>
-              <Message.Header>Error!</Message.Header>
-
+          </Form>
+        </Grid.Row>
+        <Grid.Row>
+          <Segment size="massive" basic>
+            <Message warning header="Precaución!" hidden={valid.password.all}>
               <Message.List>
                 {reduce(
-                  error,
+                  valid,
                   (acum, value, key) => {
                     switch (key) {
-                      case USER_NOT_LOCKED:
-                      case USED_OLD_PASSWORD:
-                        acum.push(<Message.Item key={key} content={value} />);
+                      case "password": {
+                        acum.push(
+                          ...reduce(
+                            value,
+                            (a, v, k) => {
+                              if (!v)
+                                switch (k) {
+                                  case "length": {
+                                    a.push(
+                                      <Message.Item content="El largo de la contraseña tiene que ser de al menos 8 caracteres." />
+                                    );
+                                    break;
+                                  }
+                                  case "specialSymbol": {
+                                    a.push(
+                                      <Message.Item
+                                        content={`La contraseña debe contener al menos un caracter especial (~¡!$&+,:;=¿?@#|'<>.^*(){}"%-_).`}
+                                      />
+                                    );
+                                    break;
+                                  }
+                                  case "lowercase": {
+                                    a.push(
+                                      <Message.Item content="La contraseña debe contener al menos una letra minúscula." />
+                                    );
+                                    break;
+                                  }
+                                  case "uppercase": {
+                                    a.push(
+                                      <Message.Item content="La contraseña debe contener al menos una letra mayúscula." />
+                                    );
+                                    break;
+                                  }
+                                  case "number": {
+                                    a.push(
+                                      <Message.Item content="La contraseña debe contener al menos un número." />
+                                    );
+                                    break;
+                                  }
+                                  case "confirm_password": {
+                                    a.push(
+                                      <Message.Item content="Debe repetir su contraseña correctamente." />
+                                    );
+                                    break;
+                                  }
+                                  default:
+                                }
+                              return a;
+                            },
+                            []
+                          )
+                        );
                         break;
+                      }
                       default:
                     }
                     return acum;
@@ -215,7 +225,29 @@ class RecoverPassword extends Component {
                 )}
               </Message.List>
             </Message>
-          </Form>
+          </Segment>
+        </Grid.Row>
+        <Grid.Row>
+          <Message error hidden={isEmpty(error)}>
+            <Message.Header>Error!</Message.Header>
+
+            <Message.List>
+              {reduce(
+                error,
+                (acum, value, key) => {
+                  switch (key) {
+                    case USER_NOT_LOCKED:
+                    case USED_OLD_PASSWORD:
+                      acum.push(<Message.Item key={key} content={value} />);
+                      break;
+                    default:
+                  }
+                  return acum;
+                },
+                []
+              )}
+            </Message.List>
+          </Message>
         </Grid.Row>
       </Grid>
     );
