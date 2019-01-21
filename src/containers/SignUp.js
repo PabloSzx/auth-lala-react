@@ -60,7 +60,7 @@ class SignUp extends Component {
     const conditions = {
       length: () => validator.isLength(password, { min: 8, max: 100 }),
       specialSymbol: () =>
-        validator.matches(password, /[~¡!$&+,:;=¿?@#|'<>.^*(){}"%-_]/),
+        validator.matches(password, /[~¡!$&+,:;=¿?@#|'<>.^\*(){}"%-_]/),
       lowercase: () => validator.matches(password, /[a-z]/),
       uppercase: () => validator.matches(password, /[A-Z]/),
       number: () => validator.matches(password, /[0-9]/),
