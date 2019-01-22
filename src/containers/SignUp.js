@@ -195,9 +195,9 @@ class SignUp extends Component {
           error={false}
           onSubmit={this.handleSubmit}
           loading={auth === LOADING}
-          size="huge"
+          size="large"
         >
-          <Segment basic size="massive">
+          <Segment basic size="large">
             <Form.Field error={!valid.name.all}>
               <label>Nombre</label>
               <Input

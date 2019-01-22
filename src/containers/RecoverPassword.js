@@ -117,9 +117,9 @@ class RecoverPassword extends Component {
             warning={!valid.password.all}
             error={!isEmpty(error)}
             loading={auth === LOADING}
-            size="huge"
+            size="big"
           >
-            <Segment size="massive" basic>
+            <Segment size="big" basic>
               <Form.Field error={!valid.password.all}>
                 <label>Contraseña</label>
                 <Input
@@ -131,7 +131,7 @@ class RecoverPassword extends Component {
                 />
               </Form.Field>
             </Segment>
-            <Segment size="massive" basic>
+            <Segment size="big" basic>
               <Form.Field error={!valid.password.all}>
                 <label>Repita su contraseña</label>
                 <Input
@@ -144,7 +144,7 @@ class RecoverPassword extends Component {
               </Form.Field>
             </Segment>
 
-            <Segment size="massive" basic>
+            <Segment size="big" basic>
               <Form.Button
                 size="huge"
                 color="blue"
@@ -156,7 +156,7 @@ class RecoverPassword extends Component {
           </Form>
         </Grid.Row>
         <Grid.Row>
-          <Segment size="massive" basic>
+          <Segment size="large" basic>
             <Message warning header="Precaución!" hidden={valid.password.all}>
               <Message.List>
                 {reduce(

@@ -121,13 +121,13 @@ class Auth extends Component {
       <Grid centered padded>
         <Grid.Row />
         <Form
-          size="huge"
+          size="big"
           onSubmit={this.handleSubmit}
           error={!isEmpty(error)}
           loading={auth === LOADING}
           warning={!valid.all}
         >
-          <Segment size="massive" basic>
+          <Segment size="big" basic>
             <Form.Field>
               <label>Correo</label>
               <Input
@@ -161,7 +161,7 @@ class Auth extends Component {
           </Segment>
           <Segment basic>
             <Form.Field>
-              <Form.Button size="huge" color="blue" disabled={!valid.all}>
+              <Form.Button size="big" color="blue" disabled={!valid.all}>
                 Login
               </Form.Button>
             </Form.Field>
@@ -170,7 +170,7 @@ class Auth extends Component {
           <Segment basic>
             <Link to="/signup">
               <Form.Field>
-                <Form.Button size="huge" color="green">
+                <Form.Button size="big" color="green">
                   Registrarse
                 </Form.Button>
               </Form.Field>
