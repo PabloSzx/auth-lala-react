@@ -1,7 +1,6 @@
 import { isEmpty, reduce } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import {
   Form,
   Checkbox,
@@ -165,16 +164,6 @@ class Auth extends Component {
                 Login
               </Form.Button>
             </Form.Field>
-          </Segment>
-
-          <Segment basic>
-            <Link to="/signup">
-              <Form.Field>
-                <Form.Button size="big" color="green">
-                  Registrarse
-                </Form.Button>
-              </Form.Field>
-            </Link>
           </Segment>
         </Form>
 

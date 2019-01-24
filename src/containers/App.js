@@ -44,7 +44,6 @@ class App extends Component {
         <Switch>
           <Route exact path="/auth" component={Auth} />
           <Route exact path="/logout" component={Logout} />
-          <Route exact path="/signup" component={SignUp} />
           <Route
             exact
             path="/unlock/:email/:unlockKey"
