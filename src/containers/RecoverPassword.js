@@ -5,7 +5,7 @@ import { Form, Message, Grid, Segment, Input } from "semantic-ui-react";
 import validator, { trim } from "validator";
 import sha1 from "crypto-js/sha1";
 import { recoverPassword, clearError } from "../actions/auth";
-import { LOADING, USER_NOT_LOCKED, USED_OLD_PASSWORD } from "../types";
+import { LOADING, USER_NOT_LOCKED, USED_OLD_PASSWORD, INVALID_PASSWORD } from "../types";
 
 class RecoverPassword extends Component {
   constructor(props) {
@@ -236,6 +236,7 @@ class RecoverPassword extends Component {
                 error,
                 (acum, value, key) => {
                   switch (key) {
+                    case INVALID_PASSWORD:
                     case USER_NOT_LOCKED:
                     case USED_OLD_PASSWORD:
                       acum.push(<Message.Item key={key} content={value} />);
