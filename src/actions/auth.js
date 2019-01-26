@@ -68,8 +68,6 @@ export const signupUser = ({ email, name, password }) => async dispatch => {
     password,
   });
 
-  console.log("res", res);
-
   dispatch({
     type: LOGIN_USER,
     payload: res.data,
@@ -90,8 +88,6 @@ export const recoverPassword = ({
     password,
     unlockKey,
   });
-
-  console.log("res", res);
 
   dispatch({ type: LOGIN_USER, payload: res.data });
 };

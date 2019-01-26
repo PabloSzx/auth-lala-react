@@ -51,7 +51,7 @@ class Auth extends Component {
 
     email = trim(email);
     password = trim(sha1(password).toString());
-    console.log("session es ", session);
+
     if (session) {
       this.props.loginUser({ email, password });
     } else {
@@ -115,7 +115,6 @@ class Auth extends Component {
   render() {
     const { email, password, session, valid } = this.state;
     const { error, auth } = this.props;
-    console.log("this.state", this.state.valid);
     return (
       <Grid centered padded>
         <Grid.Row />

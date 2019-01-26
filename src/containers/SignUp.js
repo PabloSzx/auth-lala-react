@@ -54,9 +54,6 @@ class SignUp extends Component {
   ) {
     const state = cloneDeep(this.state);
 
-    console.log("password :", password);
-    console.log("confirm_password :", confirm_password);
-
     const conditions = {
       length: () => validator.isLength(password, { min: 8, max: 100 }),
       specialSymbol: () =>
