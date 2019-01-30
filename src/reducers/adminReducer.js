@@ -1,31 +1,20 @@
-import { omit } from "lodash";
-import {
-  ADMIN_GET_PROGRAMS,
-  ADMIN_GET_USERS,
-  ADMIN_LOGIN,
-  ADMIN_FETCH,
-} from "../types";
+import { omit, isEmpty } from "lodash";
+import { ADMIN_GET_PROGRAMS, ADMIN_GET_USERS } from "../types";
 
-export default (state = {}, { type, payload }) => {
+export default (state = { users: [], programs: [] }, { type, payload }) => {
   const admin = omit(payload, "error");
 
   switch (type) {
-    case ADMIN_LOGIN:
-    case ADMIN_FETCH:
-      return {
-        ...state,
-        admin,
-      };
     case ADMIN_GET_PROGRAMS: {
       return {
         ...state,
-        programs: admin,
+        programs: isEmpty(admin) ? state.programs : admin,
       };
     }
     case ADMIN_GET_USERS: {
       return {
         ...state,
-        users: admin,
+        users: isEmpty(admin) ? state.users : admin,
       };
     }
 

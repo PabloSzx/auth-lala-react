@@ -1,7 +1,7 @@
 import { isEqual } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Header, Modal, Form, Grid, Button } from "semantic-ui-react";
+import { Modal, Form, Grid, Button } from "semantic-ui-react";
 import { adminProgramUpdate } from "../actions";
 
 export class Program extends Component {

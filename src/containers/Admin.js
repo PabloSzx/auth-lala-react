@@ -1,9 +1,15 @@
 import { get } from "lodash";
 import React, { Component } from "react";
+
 import { connect } from "react-redux";
 import { Grid, Menu } from "semantic-ui-react";
 import { adminGetPrograms, adminGetUsers, fetchUser } from "../actions";
-import { AdminPrograms, AdminUsers, AdminLogin } from "../components";
+import {
+  AdminPrograms,
+  AdminUsers,
+  AdminError,
+  AdminLogin,
+} from "../components";
 
 export class Admin extends Component {
   constructor(props) {
@@ -25,11 +31,11 @@ export class Admin extends Component {
 
   render() {
     const { active } = this.state;
-    const { admin, auth } = this.props;
+    const { auth } = this.props;
     return !get(auth, "admin", false) ? (
       <AdminLogin />
     ) : (
-      <Grid centered>
+      <Grid centered key={"dashboard"}>
         <Grid.Row>
           <Menu>
             <Menu.Item
@@ -48,7 +54,9 @@ export class Admin extends Component {
             </Menu.Item>
           </Menu>
         </Grid.Row>
-
+        <Grid.Row>
+          <AdminError />
+        </Grid.Row>
         <Grid.Row>
           {(() => {
             switch (active) {

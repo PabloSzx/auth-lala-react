@@ -5,6 +5,10 @@ import {
   adminFetch,
   adminProgramUpdate,
   adminUserUpdate,
+  adminImportPrograms,
+  adminImportUsers,
+  adminLockUser,
+  adminMailLockedUsers,
 } from "./admin";
 import {
   fetchUser,
@@ -30,4 +34,8 @@ export {
   adminFetch,
   adminProgramUpdate,
   adminUserUpdate,
+  adminImportPrograms,
+  adminImportUsers,
+  adminLockUser,
+  adminMailLockedUsers,
 };

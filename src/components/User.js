@@ -1,8 +1,8 @@
 import { isEqual } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Header, Modal, Form, Grid, Checkbox, Button } from "semantic-ui-react";
-import { adminUserUpdate } from "../actions";
+import { Modal, Form, Grid, Checkbox, Button } from "semantic-ui-react";
+import { adminUserUpdate, adminLockUser } from "../actions";
 
 export class User extends Component {
   constructor(props) {
@@ -14,7 +14,6 @@ export class User extends Component {
       name: props.user.name,
       locked: props.user.locked,
       tries: props.user.tries,
-      unlockKey: props.user.unlockKey,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -27,9 +26,7 @@ export class User extends Component {
     });
   }
 
-  async handleSubmit(event) {
-    event.preventDefault();
-
+  async handleSubmit() {
     let { email, name, locked, tries, unlockKey } = this.state;
     this.props.adminUserUpdate({
       old: {
@@ -51,7 +48,6 @@ export class User extends Component {
         name: this.props.user.name,
         locked: this.props.user.locked,
         tries: this.props.user.tries,
-        unlockKey: this.props.user.unlockKey,
       });
     }
   }
@@ -73,7 +69,7 @@ export class User extends Component {
         <Modal.Header>{user.email}</Modal.Header>
         <Modal.Content>
           <Grid centered>
-            <Form size="big" onSubmit={this.handleSubmit}>
+            <Form size="big">
               <Form.Field>
                 <label>Email</label>
                 <input
@@ -102,24 +98,25 @@ export class User extends Component {
                 />
               </Form.Field>
               <Form.Field>
-                <label>Llave de desbloqueo</label>
-                <input
-                  name="unlockKey"
-                  placeholder="Llave"
-                  onChange={this.handleChange}
-                  value={unlockKey}
-                />
-              </Form.Field>
-              <Form.Field>
                 <Checkbox
                   name="locked"
                   toggle
                   checked={locked}
                   label="Bloqueado"
+                  disabled
                   onChange={() => this.setState({ locked: !locked })}
                 />
               </Form.Field>
-              <Button type="submit">Submit</Button>
+              <Button onClick={() => this.handleSubmit()}>Guardar</Button>
+              <Button
+                onClick={() => {
+                  this.props.adminLockUser(user.email);
+                }}
+              >
+                {locked
+                  ? "Enviar correo de activación"
+                  : "Bloquear y enviar correo de activación"}
+              </Button>
             </Form>
           </Grid>
         </Modal.Content>
@@ -130,7 +127,7 @@ export class User extends Component {
 
 const mapStateToProps = state => ({});
 
-const mapDispatchToProps = { adminUserUpdate };
+const mapDispatchToProps = { adminUserUpdate, adminLockUser };
 
 export default connect(
   mapStateToProps,

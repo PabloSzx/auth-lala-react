@@ -58,3 +58,34 @@ export const adminFetch = () => async dispatch => {
     payload: res.data,
   });
 };
+
+export const adminImportUsers = data => async dispatch => {
+  const res = await axios.post("/admin/users_import", { data });
+
+  dispatch({
+    type: ADMIN_GET_USERS,
+    payload: res.data,
+  });
+};
+
+export const adminImportPrograms = data => async dispatch => {
+  const res = await axios.post("/admin/programs_import", { data });
+
+  dispatch({
+    type: ADMIN_GET_PROGRAMS,
+    payload: res.data,
+  });
+};
+
+export const adminLockUser = email => async dispatch => {
+  const res = await axios.post("/admin/lock_user", { email });
+
+  dispatch({
+    type: ADMIN_GET_USERS,
+    payload: res.data,
+  });
+};
+
+export const adminMailLockedUsers = () => async dispatch => {
+  await axios.post("/admin/mail_all_locked_users");
+};

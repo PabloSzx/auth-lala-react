@@ -1,32 +1,11 @@
 import { map } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Table, Header } from "semantic-ui-react";
+import { Table, Grid } from "semantic-ui-react";
 import { adminGetPrograms } from "../actions";
-import { Program } from "./";
+import { Program, AdminImportPrograms } from "./";
 
 export class AdminPrograms extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      user_programs: [
-        {
-          email: "email",
-          program: "informatica",
-        },
-        {
-          email: "email",
-          program: "mecanica",
-        },
-        {
-          email: "email",
-          program: "civil",
-        },
-      ],
-    };
-  }
-
   componentDidMount() {
     this.props.adminGetPrograms();
   }
@@ -35,33 +14,41 @@ export class AdminPrograms extends Component {
     const { programs } = this.props;
 
     return (
-      <Table celled padded>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Email</Table.HeaderCell>
-            <Table.HeaderCell>Programa</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
+      <Grid>
+        <Grid.Row centered>
+          <AdminImportPrograms />
+        </Grid.Row>
+        <Grid.Row>
+          <Table celled padded>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>email</Table.HeaderCell>
+                <Table.HeaderCell>program</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
 
-        <Table.Body>
-          {map(programs, (value, key) => (
-            <Program key={key} program={value}>
-              {({ onClick }) => (
-                <Table.Row onClick={onClick}>
-                  {map(value, (v, k) => (
-                    <Table.Cell key={k}>{v}</Table.Cell>
-                  ))}
-                </Table.Row>
-              )}
-            </Program>
-          ))}
-        </Table.Body>
-      </Table>
+            <Table.Body>
+              {map(programs, (value, key) => (
+                <Program key={key} program={value}>
+                  {({ onClick }) => (
+                    <Table.Row onClick={onClick}>
+                      {map(value, (v, k) => (
+                        <Table.Cell key={k}>{v}</Table.Cell>
+                      ))}
+                    </Table.Row>
+                  )}
+                </Program>
+              ))}
+            </Table.Body>
+          </Table>
+        </Grid.Row>
+      </Grid>
     );
   }
 }
 
-const mapStateToProps = ({ admin: { programs = [] } }) => ({
+const mapStateToProps = ({ admin: { programs = [] }, error }) => ({
+  error,
   programs,
 });
 

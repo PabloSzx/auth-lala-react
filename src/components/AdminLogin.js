@@ -33,7 +33,7 @@ export class AdminLogin extends Component {
     const { username, password } = this.state;
 
     return (
-      <Grid centered>
+      <Grid centered key={"login"}>
         <Grid.Row />
         <Grid.Row>
           <Form size="big" onSubmit={this.handleSubmit}>
@@ -70,7 +70,7 @@ export class AdminLogin extends Component {
   }
 }
 
-const mapStateToProps = ({}) => ({});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = { loginUser };
 
