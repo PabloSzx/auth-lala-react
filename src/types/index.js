@@ -14,6 +14,10 @@ const WRONG_EMAIL = "wrong_email";
 const LOCKED_USER = "locked_user";
 const LOADING = "loading";
 const CLEAR_ERROR = "clear_error";
+const ADMIN_GET_USERS = "admin_get_users";
+const ADMIN_GET_PROGRAMS = "admin_get_programs";
+const ADMIN_LOGIN = "admin_login";
+const ADMIN_FETCH = "admin_fetch";
 
 export {
   LOGIN_USER,
@@ -32,4 +36,8 @@ export {
   LOCKED_USER,
   LOADING,
   CLEAR_ERROR,
+  ADMIN_GET_USERS,
+  ADMIN_GET_PROGRAMS,
+  ADMIN_LOGIN,
+  ADMIN_FETCH,
 };

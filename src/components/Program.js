@@ -1,6 +1,8 @@
+import { isEqual } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Header, Modal, Form, Grid } from "semantic-ui-react";
+import { Header, Modal, Form, Grid, Button } from "semantic-ui-react";
+import { adminProgramUpdate } from "../actions";
 
 export class Program extends Component {
   constructor(props) {
@@ -12,6 +14,7 @@ export class Program extends Component {
       program: props.program.program,
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange({ target: { value, name } }) {
@@ -20,13 +23,30 @@ export class Program extends Component {
     });
   }
 
+  async handleSubmit(event) {
+    event.preventDefault();
+
+    let { email, program } = this.state;
+    this.props.adminProgramUpdate({
+      old: {
+        email: this.props.program.email,
+        program: this.props.program.program,
+      },
+      email,
+      program,
+    });
+
+    this.setState({
+      open: false,
+    });
+  }
+
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.user !== prevProps.user) {
+    if (!isEqual(this.props.program, prevProps.program))
       this.setState({
         email: this.props.program.email,
         program: this.props.program.program,
       });
-    }
   }
 
   render() {
@@ -42,10 +62,12 @@ export class Program extends Component {
         open={open}
         key={key}
       >
-        <Modal.Header>{programProp.email}</Modal.Header>
+        <Modal.Header>
+          {programProp.email}-{programProp.program}
+        </Modal.Header>
         <Modal.Content>
           <Grid centered>
-            <Form>
+            <Form size="big" onSubmit={this.handleSubmit}>
               <Form.Field>
                 <label>Email</label>
                 <input
@@ -64,6 +86,7 @@ export class Program extends Component {
                   value={program}
                 />
               </Form.Field>
+              <Button type="submit">Submit</Button>
             </Form>
           </Grid>
         </Modal.Content>
@@ -74,7 +97,7 @@ export class Program extends Component {
 
 const mapStateToProps = state => ({});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { adminProgramUpdate };
 
 export default connect(
   mapStateToProps,

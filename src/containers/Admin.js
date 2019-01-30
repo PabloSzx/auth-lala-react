@@ -1,7 +1,9 @@
+import { get } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Grid, Menu } from "semantic-ui-react";
-import { AdminPrograms, AdminUsers } from "../components";
+import { adminGetPrograms, adminGetUsers, fetchUser } from "../actions";
+import { AdminPrograms, AdminUsers, AdminLogin } from "../components";
 
 export class Admin extends Component {
   constructor(props) {
@@ -12,11 +14,21 @@ export class Admin extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.fetchUser();
+
+    this.props.adminGetPrograms();
+    this.props.adminGetUsers();
+  }
+
   handleItemClick = (e, { name }) => this.setState({ active: name });
 
   render() {
     const { active } = this.state;
-    return (
+    const { admin, auth } = this.props;
+    return !get(auth, "admin", false) ? (
+      <AdminLogin />
+    ) : (
       <Grid centered>
         <Grid.Row>
           <Menu>
@@ -54,9 +66,12 @@ export class Admin extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = ({ auth, admin: { admin } }) => ({
+  admin,
+  auth,
+});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { adminGetPrograms, adminGetUsers, fetchUser };
 
 export default connect(
   mapStateToProps,

@@ -2,6 +2,7 @@ import { map } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Table, Header } from "semantic-ui-react";
+import { adminGetUsers } from "../actions";
 import { User } from "./";
 
 export class AdminUsers extends Component {
@@ -12,7 +13,6 @@ export class AdminUsers extends Component {
       users: [
         {
           email: "email",
-          password: "password",
           name: "name",
           locked: false,
           tries: 0,
@@ -20,7 +20,6 @@ export class AdminUsers extends Component {
         },
         {
           email: "email",
-          password: "password",
           name: "name",
           locked: false,
           tries: 0,
@@ -28,7 +27,6 @@ export class AdminUsers extends Component {
         },
         {
           email: "email",
-          password: "password",
           name: "name",
           locked: false,
           tries: 0,
@@ -36,7 +34,6 @@ export class AdminUsers extends Component {
         },
         {
           email: "email",
-          password: "password",
           name: "name",
           locked: true,
           tries: 0,
@@ -44,7 +41,6 @@ export class AdminUsers extends Component {
         },
         {
           email: "email",
-          password: "password",
           name: "name",
           locked: false,
           tries: 0,
@@ -54,14 +50,18 @@ export class AdminUsers extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.adminGetUsers();
+  }
+
   render() {
-    const { users } = this.state;
+    //const { users } = this.state;
+    const { users } = this.props;
     return (
       <Table celled padded>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Email</Table.HeaderCell>
-            <Table.HeaderCell>Contraseña</Table.HeaderCell>
             <Table.HeaderCell>Name</Table.HeaderCell>
             <Table.HeaderCell>Locked</Table.HeaderCell>
             <Table.HeaderCell>Intentos erroneos</Table.HeaderCell>
@@ -96,9 +96,11 @@ export class AdminUsers extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = ({ admin: { users = [] } }) => ({
+  users,
+});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { adminGetUsers };
 
 export default connect(
   mapStateToProps,

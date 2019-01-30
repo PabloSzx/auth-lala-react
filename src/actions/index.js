@@ -1,4 +1,12 @@
 import {
+  adminGetPrograms,
+  adminGetUsers,
+  adminLogin,
+  adminFetch,
+  adminProgramUpdate,
+  adminUserUpdate,
+} from "./admin";
+import {
   fetchUser,
   loginUser,
   loginUserNoSession,
@@ -16,4 +24,10 @@ export {
   signupUser,
   recoverPassword,
   clearError,
+  adminGetPrograms,
+  adminGetUsers,
+  adminLogin,
+  adminFetch,
+  adminProgramUpdate,
+  adminUserUpdate,
 };

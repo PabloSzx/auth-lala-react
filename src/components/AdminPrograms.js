@@ -2,6 +2,7 @@ import { map } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Table, Header } from "semantic-ui-react";
+import { adminGetPrograms } from "../actions";
 import { Program } from "./";
 
 export class AdminPrograms extends Component {
@@ -26,8 +27,13 @@ export class AdminPrograms extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.adminGetPrograms();
+  }
+
   render() {
-    const { user_programs } = this.state;
+    const { programs } = this.props;
+
     return (
       <Table celled padded>
         <Table.Header>
@@ -38,7 +44,7 @@ export class AdminPrograms extends Component {
         </Table.Header>
 
         <Table.Body>
-          {map(user_programs, (value, key) => (
+          {map(programs, (value, key) => (
             <Program key={key} program={value}>
               {({ onClick }) => (
                 <Table.Row onClick={onClick}>
@@ -55,9 +61,13 @@ export class AdminPrograms extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = ({ admin: { programs = [] } }) => ({
+  programs,
+});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  adminGetPrograms,
+};
 
 export default connect(
   mapStateToProps,

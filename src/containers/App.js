@@ -26,6 +26,7 @@ class App extends Component {
 
   componentDidUpdate = (prevProps, prevState) => {
     if (
+      false &&
       prevProps.auth !== this.props.auth &&
       !isString(this.props.auth) &&
       !isEmpty(this.props.auth)

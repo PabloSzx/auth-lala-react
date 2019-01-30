@@ -1,6 +1,8 @@
+import { isEqual } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Header, Modal, Form, Grid, Checkbox, Button } from "semantic-ui-react";
+import { adminUserUpdate } from "../actions";
 
 export class User extends Component {
   constructor(props) {
@@ -10,13 +12,13 @@ export class User extends Component {
       open: false,
       email: props.user.email,
       name: props.user.name,
-      password: props.user.password,
       locked: props.user.locked,
       tries: props.user.tries,
       unlockKey: props.user.unlockKey,
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange({ target: { value, name } }) {
@@ -25,15 +27,31 @@ export class User extends Component {
     });
   }
 
+  async handleSubmit(event) {
+    event.preventDefault();
+
+    let { email, name, locked, tries, unlockKey } = this.state;
+    this.props.adminUserUpdate({
+      old: {
+        email: this.props.user.email,
+      },
+      email,
+      name,
+      locked,
+      tries,
+      unlockKey,
+    });
+    this.setState({ open: false });
+  }
+
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.user !== prevProps.user) {
+    if (!isEqual(this.props.user, prevProps.user)) {
       this.setState({
-        email: this.props.email,
+        email: this.props.user.email,
         name: this.props.user.name,
-        password: this.props.password,
-        locked: this.props.locked,
-        tries: this.props.tries,
-        unlockKey: this.props.unlockKey,
+        locked: this.props.user.locked,
+        tries: this.props.user.tries,
+        unlockKey: this.props.user.unlockKey,
       });
     }
   }
@@ -42,7 +60,7 @@ export class User extends Component {
     const { open } = this.state;
     const { children, key, user } = this.props;
 
-    const { email, password, name, locked, tries, unlockKey } = this.state;
+    const { email, name, locked, tries, unlockKey } = this.state;
 
     return (
       <Modal
@@ -55,7 +73,7 @@ export class User extends Component {
         <Modal.Header>{user.email}</Modal.Header>
         <Modal.Content>
           <Grid centered>
-            <Form>
+            <Form size="big" onSubmit={this.handleSubmit}>
               <Form.Field>
                 <label>Email</label>
                 <input
@@ -112,7 +130,7 @@ export class User extends Component {
 
 const mapStateToProps = state => ({});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { adminUserUpdate };
 
 export default connect(
   mapStateToProps,
