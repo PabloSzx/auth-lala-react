@@ -119,7 +119,7 @@ export class AdminUsers extends Component {
                             case "locked":
                               return (
                                 <Table.Cell key={k}>
-                                  {v ? "Si" : "No"}
+                                  {v ? (<Icon circular name="lock"></Icon>) : (<Icon circular name="lock open"></Icon>)}
                                 </Table.Cell>
                               );
                             default:
