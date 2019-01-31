@@ -1,4 +1,4 @@
-import { map } from "lodash";
+import { map, sortBy, isEqual } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Table, Grid, Button, Icon } from "semantic-ui-react";
@@ -6,12 +6,49 @@ import { adminGetUsers, adminMailLockedUsers } from "../actions";
 import { User, AdminImportUsers } from "./";
 
 export class AdminUsers extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      column: null,
+      users: props.users,
+      direction: null,
+    };
+  }
+
   componentDidMount() {
     this.props.adminGetUsers();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (!isEqual(this.props.users, prevProps.users)) {
+      this.setState({
+        users: sortBy(this.props.users, [this.state.column]),
+      });
+    }
+  }
+
+  handleSort = clickedColumn => () => {
+    const { column, users, direction } = this.state;
+
+    if (column !== clickedColumn) {
+      this.setState({
+        column: clickedColumn,
+        users: sortBy(this.props.users, [clickedColumn]),
+        direction: "ascending",
+      });
+
+      return;
+    }
+
+    this.setState({
+      users: users.reverse(),
+      direction: direction === "ascending" ? "descending" : "ascending",
+    });
+  };
+
   render() {
-    const { users } = this.props;
+    const { users, column, direction } = this.state;
 
     return (
       <Grid>
@@ -37,13 +74,34 @@ export class AdminUsers extends Component {
             size="large"
             style={{ width: "1em" }}
             textAlign="center"
+            sortable
           >
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell>email</Table.HeaderCell>
-                <Table.HeaderCell>name</Table.HeaderCell>
-                <Table.HeaderCell>locked</Table.HeaderCell>
-                <Table.HeaderCell>tries</Table.HeaderCell>
+                <Table.HeaderCell
+                  sorted={column === "email" ? direction : null}
+                  onClick={this.handleSort("email")}
+                >
+                  email
+                </Table.HeaderCell>
+                <Table.HeaderCell
+                  sorted={column === "name" ? direction : null}
+                  onClick={this.handleSort("name")}
+                >
+                  name
+                </Table.HeaderCell>
+                <Table.HeaderCell
+                  sorted={column === "locked" ? direction : null}
+                  onClick={this.handleSort("locked")}
+                >
+                  locked
+                </Table.HeaderCell>
+                <Table.HeaderCell
+                  sorted={column === "tries" ? direction : null}
+                  onClick={this.handleSort("tries")}
+                >
+                  tries
+                </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
 
