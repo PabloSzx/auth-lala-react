@@ -8,6 +8,7 @@ import {
   Segment,
   Message,
   Input,
+  Icon,
 } from "semantic-ui-react";
 import { isEmail, trim, isLength } from "validator";
 import sha1 from "crypto-js/sha1";
@@ -123,17 +124,17 @@ class Auth extends Component {
           onSubmit={this.handleSubmit}
           error={!isEmpty(error)}
           loading={auth === LOADING}
-          warning={!valid.all}
         >
           <Segment size="big" basic>
             <Form.Field>
-              <label>Correo</label>
+              <label>Correo Electrónico</label>
               <Input
                 name="email"
                 type="email"
                 placeholder="email@uach.cl"
                 onChange={this.handleChange}
                 value={email}
+                style={{ width: "20em" }}
               />
             </Form.Field>
             <Form.Field>
@@ -144,6 +145,7 @@ class Auth extends Component {
                 placeholder="contraseña"
                 onChange={this.handleChange}
                 value={password}
+                style={{ width: "20em" }}
               />
             </Form.Field>
           </Segment>
@@ -159,8 +161,15 @@ class Auth extends Component {
           </Segment>
           <Segment basic>
             <Form.Field>
-              <Form.Button size="big" color="blue" disabled={!valid.all}>
-                Login
+              <Form.Button
+                size="big"
+                color="blue"
+                disabled={!valid.all}
+                icon
+                labelPosition="left"
+              >
+                <Icon name="sign-in" />
+                Ingresar
               </Form.Button>
             </Form.Field>
           </Segment>
@@ -181,75 +190,6 @@ class Auth extends Component {
                     case LOCKED_USER:
                       acum.push(<Message.Item key={key} content={value} />);
                       break;
-                    default:
-                  }
-                  return acum;
-                },
-                []
-              )}
-            </Message.List>
-          </Message>
-        </Grid.Row>
-        <Grid.Row>
-          <Message warning hidden={valid.all}>
-            <Message.Header>Precaución!</Message.Header>
-
-            <Message.List>
-              {reduce(
-                valid,
-                (acum, value, key) => {
-                  switch (key) {
-                    case "email": {
-                      acum.push(
-                        ...reduce(
-                          value,
-                          (a, v, k) => {
-                            if (!v)
-                              switch (k) {
-                                case "all": {
-                                  a.push(
-                                    <Message.Item
-                                      key={k + key}
-                                      content="Ingrese un email valido."
-                                    />
-                                  );
-                                  break;
-                                }
-                                default:
-                              }
-                            return a;
-                          },
-                          []
-                        )
-                      );
-                      break;
-                    }
-                    case "password": {
-                      acum.push(
-                        ...reduce(
-                          value,
-                          (a, v, k) => {
-                            if (!v)
-                              switch (k) {
-                                case "all": {
-                                  a.push(
-                                    <Message.Item
-                                      key={k + key}
-                                      content="El largo de la contraseña tiene que ser de al menos 8 caracteres."
-                                    />
-                                  );
-                                  break;
-                                }
-                                default:
-                              }
-                            return a;
-                          },
-                          []
-                        )
-                      );
-                      break;
-                    }
-
                     default:
                   }
                   return acum;

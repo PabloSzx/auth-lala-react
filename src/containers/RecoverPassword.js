@@ -5,7 +5,12 @@ import { Form, Message, Grid, Segment, Input } from "semantic-ui-react";
 import validator, { trim } from "validator";
 import sha1 from "crypto-js/sha1";
 import { recoverPassword, clearError } from "../actions/auth";
-import { LOADING, USER_NOT_LOCKED, USED_OLD_PASSWORD, INVALID_PASSWORD } from "../types";
+import {
+  LOADING,
+  USER_NOT_LOCKED,
+  USED_OLD_PASSWORD,
+  INVALID_PASSWORD,
+} from "../types";
 
 class RecoverPassword extends Component {
   constructor(props) {
@@ -121,7 +126,7 @@ class RecoverPassword extends Component {
           >
             <Segment size="big" basic>
               <Form.Field error={!valid.password.all}>
-                <label>Contraseña</label>
+                <label>Nueva Contraseña</label>
                 <Input
                   name="password"
                   type="password"
@@ -150,7 +155,7 @@ class RecoverPassword extends Component {
                 color="blue"
                 disabled={!valid.password.all}
               >
-                Recuperar cuenta
+                Activar cuenta
               </Form.Button>
             </Segment>
           </Form>

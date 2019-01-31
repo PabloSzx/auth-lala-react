@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Form, Grid, Label } from "semantic-ui-react";
+import { Form, Grid, Label, Icon } from "semantic-ui-react";
 import sha1 from "crypto-js/sha1";
 import { loginUser } from "../actions";
 
@@ -60,8 +60,9 @@ export class AdminLogin extends Component {
               />
             </Form.Field>
 
-            <Form.Button size="big" color="blue">
-              Login
+            <Form.Button size="big" color="blue" icon labelPosition="left">
+              <Icon name="sign-in" />
+              Ingresar
             </Form.Button>
           </Form>
         </Grid.Row>
