@@ -100,10 +100,18 @@ export class Program extends Component {
                   style={{ width: "25em" }}
                 />
               </Form.Field>
-              <Button primary onClick={() => this.handleSubmit()}>
+              <Button
+                icon
+                labelPosition="left"
+                primary
+                onClick={() => this.handleSubmit()}
+              >
+                <Icon name="save outline" />
                 Guardar
               </Button>
               <Button
+                icon
+                labelPosition="left"
                 color="red"
                 onClick={() =>
                   this.props.adminDeleteProgram({
@@ -112,6 +120,7 @@ export class Program extends Component {
                   })
                 }
               >
+                <Icon name="remove circle" />
                 Eliminar
               </Button>
             </Form>

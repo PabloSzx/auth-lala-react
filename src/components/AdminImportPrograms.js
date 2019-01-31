@@ -20,9 +20,7 @@ class AdminImportPrograms extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  async handleSubmit(event) {
-    event.preventDefault();
-
+  async handleSubmit() {
     let { data } = this.state;
 
     try {
@@ -30,7 +28,7 @@ class AdminImportPrograms extends Component {
         data = JSON.parse(data);
         console.log("json: ", data);
         this.props.adminImportPrograms(data);
-        this.setState({ open: false });
+        this.setState({ open: false, data: "" });
       } else {
         csv({
           ignoreEmpty: true,
@@ -40,7 +38,7 @@ class AdminImportPrograms extends Component {
             json => {
               console.log("csv :", json);
               this.props.adminImportPrograms(json);
-              this.setState({ open: false });
+              this.setState({ open: false, data: "" });
             },
             error => {
               console.error(error);
@@ -57,13 +55,31 @@ class AdminImportPrograms extends Component {
     return (
       <Modal
         open={open}
-        trigger={<Button primary>Importar Programas</Button>}
+        trigger={
+          <Button primary icon labelPosition="left">
+            <Icon name="calendar plus outline" />
+            Importar Programas
+          </Button>
+        }
         onClose={() => this.setState({ open: false })}
         onOpen={() => this.setState({ open: true })}
-        onSubmit={this.handleSubmit}
       >
         <Modal.Header>Importar Programas</Modal.Header>
         <Modal.Content>
+          <Button
+            circular
+            icon
+            secondary
+            style={{ position: "absolute", right: "0.5em", top: "0.5em" }}
+            onClick={() => {
+              this.setState({
+                data: "",
+              });
+            }}
+          >
+            <Icon circular name="redo" />
+          </Button>
+
           <Grid centered>
             <Grid.Row>
               <Dropzone
@@ -88,7 +104,16 @@ class AdminImportPrograms extends Component {
                         "dropzone--isActive": isDragActive,
                       })}
                     >
-                      <Icon size="large" name="upload" />
+                      <Button
+                        icon
+                        labelPosition="left"
+                        circular
+                        size="huge"
+                        color="brown"
+                      >
+                        <Icon name="upload" />
+                        Subir archivo
+                      </Button>
                       <input {...getInputProps()} />
                     </div>
                   );
@@ -97,8 +122,15 @@ class AdminImportPrograms extends Component {
             </Grid.Row>
             <Grid.Row>
               <Form>
-                <Form.Button size="big" color="blue">
-                  Enviar
+                <Form.Button
+                  icon
+                  labelPosition="left"
+                  size="big"
+                  color="blue"
+                  onClick={() => this.handleSubmit()}
+                >
+                  <Icon name="plus circle" />
+                  Importar
                 </Form.Button>
 
                 <TextArea

@@ -1,7 +1,7 @@
 import { map } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Table, Grid, Button } from "semantic-ui-react";
+import { Table, Grid, Button, Icon } from "semantic-ui-react";
 import { adminGetUsers, adminMailLockedUsers } from "../actions";
 import { User, AdminImportUsers } from "./";
 
@@ -19,7 +19,13 @@ export class AdminUsers extends Component {
           <AdminImportUsers />
         </Grid.Row>
         <Grid.Row centered>
-          <Button secondary onClick={() => this.props.adminMailLockedUsers()}>
+          <Button
+            icon
+            labelPosition="left"
+            secondary
+            onClick={() => this.props.adminMailLockedUsers()}
+          >
+            <Icon name="mail" />
             Enviar nuevo código de activación a todos los usuarios bloqueados
           </Button>
         </Grid.Row>

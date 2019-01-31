@@ -126,23 +126,35 @@ export class User extends Component {
                   onChange={() => this.setState({ locked: !locked })}
                 />
               </Form.Field>
-              <Button primary onClick={() => this.handleSubmit()}>
+              <Button
+                icon
+                labelPosition="left"
+                primary
+                onClick={() => this.handleSubmit()}
+              >
+                <Icon name="save outline" />
                 Guardar
               </Button>
               <Button
+                icon
+                labelPosition="left"
                 secondary
                 onClick={() => {
                   this.props.adminLockUser(user.email);
                 }}
               >
+                <Icon name={locked ? "mail" : "lock"} />
                 {locked
                   ? "Enviar correo de activación"
                   : "Bloquear y enviar correo de activación"}
               </Button>
               <Button
+                icon
+                labelPosition="left"
                 color="red"
                 onClick={() => this.props.adminDeleteUser(user.email)}
               >
+                <Icon name="remove user" />
                 Eliminar
               </Button>
             </Form>

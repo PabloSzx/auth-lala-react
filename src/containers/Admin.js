@@ -2,7 +2,7 @@ import { get } from "lodash";
 import React, { Component } from "react";
 
 import { connect } from "react-redux";
-import { Grid, Menu } from "semantic-ui-react";
+import { Grid, Menu, Icon } from "semantic-ui-react";
 import { adminGetPrograms, adminGetUsers, fetchUser } from "../actions";
 import {
   AdminPrograms,
@@ -39,17 +39,21 @@ export class Admin extends Component {
         <Grid.Row>
           <Menu>
             <Menu.Item
+              icon="labeled"
               name="users"
               active={active === "users"}
               onClick={this.handleItemClick}
             >
+              <Icon name="user outline" />
               Usuarios
             </Menu.Item>
             <Menu.Item
+              icon="labeled"
               name="programs"
               active={active === "programs"}
               onClick={this.handleItemClick}
             >
+              <Icon name="table" />
               Programas
             </Menu.Item>
           </Menu>
