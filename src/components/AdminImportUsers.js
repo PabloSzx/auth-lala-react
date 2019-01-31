@@ -57,7 +57,7 @@ class AdminImportUsers extends Component {
     return (
       <Modal
         open={open}
-        trigger={<Button>Importar Usuarios</Button>}
+        trigger={<Button primary>Importar Usuarios</Button>}
         onClose={() => this.setState({ open: false })}
         onOpen={() => this.setState({ open: true })}
         onSubmit={this.handleSubmit}

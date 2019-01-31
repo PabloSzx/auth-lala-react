@@ -9,7 +9,10 @@ import {
   adminImportUsers,
   adminLockUser,
   adminMailLockedUsers,
+  adminDeleteProgram,
+  adminDeleteUser,
 } from "./admin";
+
 import {
   fetchUser,
   loginUser,
@@ -38,4 +41,6 @@ export {
   adminImportUsers,
   adminLockUser,
   adminMailLockedUsers,
+  adminDeleteProgram,
+  adminDeleteUser,
 };

@@ -57,7 +57,7 @@ class AdminImportPrograms extends Component {
     return (
       <Modal
         open={open}
-        trigger={<Button>Importar Programas</Button>}
+        trigger={<Button primary>Importar Programas</Button>}
         onClose={() => this.setState({ open: false })}
         onOpen={() => this.setState({ open: true })}
         onSubmit={this.handleSubmit}

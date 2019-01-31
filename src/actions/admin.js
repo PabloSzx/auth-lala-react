@@ -89,3 +89,21 @@ export const adminLockUser = email => async dispatch => {
 export const adminMailLockedUsers = () => async dispatch => {
   await axios.post("/admin/mail_all_locked_users");
 };
+
+export const adminDeleteUser = email => async dispatch => {
+  const res = await axios.post("/admin/delete_user", { email });
+
+  dispatch({
+    type: ADMIN_GET_USERS,
+    payload: res.data,
+  });
+};
+
+export const adminDeleteProgram = ({ email, program }) => async dispatch => {
+  const res = await axios.post("/admin/delete_program", { email, program });
+
+  dispatch({
+    type: ADMIN_GET_PROGRAMS,
+    payload: res.data,
+  });
+};

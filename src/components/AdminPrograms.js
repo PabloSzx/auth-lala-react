@@ -18,8 +18,15 @@ export class AdminPrograms extends Component {
         <Grid.Row centered>
           <AdminImportPrograms />
         </Grid.Row>
-        <Grid.Row>
-          <Table celled padded>
+        <Grid.Row centered>
+          <Table
+            padded
+            selectable
+            celled
+            size="large"
+            style={{ width: "1em" }}
+            textAlign="center"
+          >
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>email</Table.HeaderCell>
@@ -31,7 +38,7 @@ export class AdminPrograms extends Component {
               {map(programs, (value, key) => (
                 <Program key={key} program={value}>
                   {({ onClick }) => (
-                    <Table.Row onClick={onClick}>
+                    <Table.Row onClick={onClick} style={{ cursor: "pointer" }}>
                       {map(value, (v, k) => (
                         <Table.Cell key={k}>{v}</Table.Cell>
                       ))}

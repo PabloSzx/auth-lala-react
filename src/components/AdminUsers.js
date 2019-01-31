@@ -11,7 +11,7 @@ export class AdminUsers extends Component {
   }
 
   render() {
-    const { users, error } = this.props;
+    const { users } = this.props;
 
     return (
       <Grid>
@@ -19,12 +19,19 @@ export class AdminUsers extends Component {
           <AdminImportUsers />
         </Grid.Row>
         <Grid.Row centered>
-          <Button onClick={() => this.props.adminMailLockedUsers()}>
+          <Button secondary onClick={() => this.props.adminMailLockedUsers()}>
             Enviar nuevo código de activación a todos los usuarios bloqueados
           </Button>
         </Grid.Row>
-        <Grid.Row>
-          <Table celled padded>
+        <Grid.Row centered>
+          <Table
+            padded
+            selectable
+            celled
+            size="large"
+            style={{ width: "1em" }}
+            textAlign="center"
+          >
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>email</Table.HeaderCell>
@@ -39,7 +46,10 @@ export class AdminUsers extends Component {
                 <User key={key} user={value}>
                   {({ onClick }) => {
                     return (
-                      <Table.Row onClick={onClick}>
+                      <Table.Row
+                        onClick={onClick}
+                        style={{ cursor: "pointer" }}
+                      >
                         {map(value, (v, k) => {
                           switch (k) {
                             case "locked":
