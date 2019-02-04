@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Modal, Form, Grid, Checkbox, Button, Icon } from "semantic-ui-react";
 import { adminUserUpdate, adminLockUser, adminDeleteUser } from "../actions";
+import { Confirm } from "./";
 
 export class User extends Component {
   constructor(props) {
@@ -67,12 +68,10 @@ export class User extends Component {
       >
         <Modal.Header>{user.email}</Modal.Header>
         <Modal.Content>
-          <Button
-            circular
-            icon
-            secondary
-            style={{ position: "absolute", right: "0.5em", top: "0.5em" }}
-            onClick={() => {
+          <Confirm
+            header="¿Está seguro que desea resetear los campos del formulario a los obtenidos desde la base de datos?"
+            content="Cualquier cambio en los campos de información va a ser perdido"
+            onConfirm={() => {
               this.setState({
                 email: this.props.user.email,
                 name: this.props.user.name,
@@ -81,8 +80,18 @@ export class User extends Component {
               });
             }}
           >
-            <Icon circular name="redo" />
-          </Button>
+            {onClick => (
+              <Button
+                circular
+                icon
+                secondary
+                style={{ position: "absolute", right: "0.5em", top: "0.5em" }}
+                onClick={() => onClick()}
+              >
+                <Icon circular name="redo" />
+              </Button>
+            )}
+          </Confirm>
 
           <Grid centered>
             <Form size="big">
@@ -126,37 +135,73 @@ export class User extends Component {
                   onChange={() => this.setState({ locked: !locked })}
                 />
               </Form.Field>
-              <Button
-                icon
-                labelPosition="left"
-                primary
-                onClick={() => this.handleSubmit()}
+              <Confirm
+                header="¿Está seguro que desea guardar en la base de datos los cambios hechos en este usuario?"
+                content="Si hace un cambio en el campo de email asegurese que en la tabla de programas no hayan referencias al email anterior"
+                onConfirm={() => this.handleSubmit()}
               >
-                <Icon name="save outline" />
-                Guardar
-              </Button>
-              <Button
-                icon
-                labelPosition="left"
-                secondary
-                onClick={() => {
+                {onClick => (
+                  <Button
+                    icon
+                    labelPosition="left"
+                    primary
+                    onClick={() => onClick()}
+                  >
+                    <Icon name="save outline" />
+                    Guardar
+                  </Button>
+                )}
+              </Confirm>
+
+              <Confirm
+                header={`¿Está seguro que desea ${
+                  locked
+                    ? "enviar un correo de activación"
+                    : "bloquear y enviar un correo de activación"
+                } a este usuario?`}
+                content="Va a ser enviado un correo electrónico al usuario en conjunto con un código de activación nuevo"
+                onConfirm={() => {
                   this.props.adminLockUser(user.email);
+                  this.setState({
+                    open: false,
+                  });
                 }}
               >
-                <Icon name={locked ? "mail" : "lock"} />
-                {locked
-                  ? "Enviar correo de activación"
-                  : "Bloquear y enviar correo de activación"}
-              </Button>
-              <Button
-                icon
-                labelPosition="left"
-                color="red"
-                onClick={() => this.props.adminDeleteUser(user.email)}
+                {onClick => (
+                  <Button
+                    icon
+                    labelPosition="left"
+                    secondary
+                    onClick={() => onClick()}
+                  >
+                    <Icon name={locked ? "mail" : "lock"} />
+                    {locked
+                      ? "Enviar correo de activación"
+                      : "Bloquear y enviar correo de activación"}
+                  </Button>
+                )}
+              </Confirm>
+
+              <Confirm
+                header="¿Está seguro que desea eliminar este usuario?"
+                content="Asegurese que no haya referencias a este usuario en la tabla de programas"
+                onConfirm={() => {
+                  this.props.adminDeleteUser(user.email);
+                  this.setState({ open: false });
+                }}
               >
-                <Icon name="remove user" />
-                Eliminar
-              </Button>
+                {onClick => (
+                  <Button
+                    icon
+                    labelPosition="left"
+                    color="red"
+                    onClick={() => onClick()}
+                  >
+                    <Icon name="remove user" />
+                    Eliminar
+                  </Button>
+                )}
+              </Confirm>
             </Form>
           </Grid>
         </Modal.Content>

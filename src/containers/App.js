@@ -1,4 +1,4 @@
-import { isEmpty, isString } from "lodash";
+import { isEmpty, isString, get } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
@@ -26,10 +26,10 @@ class App extends Component {
 
   componentDidUpdate = (prevProps, prevState) => {
     if (
-      false &&
       prevProps.auth !== this.props.auth &&
       !isString(this.props.auth) &&
-      !isEmpty(this.props.auth)
+      !isEmpty(this.props.auth) &&
+      !get(this.props.auth, "admin", false)
     ) {
       window.location.replace(
         process.env.NODE_ENV === "development"

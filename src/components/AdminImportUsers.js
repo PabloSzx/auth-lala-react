@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { Modal, TextArea, Form, Grid, Button, Icon } from "semantic-ui-react";
 import { isJSON } from "validator";
 import { adminImportUsers } from "../actions";
+import { Confirm } from "./";
 
 class AdminImportUsers extends Component {
   constructor(props) {
@@ -66,19 +67,27 @@ class AdminImportUsers extends Component {
       >
         <Modal.Header>Importar Usuarios</Modal.Header>
         <Modal.Content>
-          <Button
-            circular
-            icon
-            secondary
-            style={{ position: "absolute", right: "0.5em", top: "0.5em" }}
-            onClick={() => {
+          <Confirm
+            header="¿Está seguro que desea resetear la información a importar?"
+            content="La información en el area de texto será borrada"
+            onConfirm={() => {
               this.setState({
                 data: "",
               });
             }}
           >
-            <Icon circular name="redo" />
-          </Button>
+            {onClick => (
+              <Button
+                circular
+                icon
+                secondary
+                style={{ position: "absolute", right: "0.5em", top: "0.5em" }}
+                onClick={() => onClick()}
+              >
+                <Icon circular name="redo" />
+              </Button>
+            )}
+          </Confirm>
 
           <Grid centered>
             <Grid.Row>
@@ -122,16 +131,24 @@ class AdminImportUsers extends Component {
             </Grid.Row>
             <Grid.Row>
               <Form>
-                <Form.Button
-                  icon
-                  labelPosition="left"
-                  size="big"
-                  color="blue"
-                  onClick={() => this.handleSubmit()}
+                <Confirm
+                  onConfirm={() => this.handleSubmit()}
+                  header="¿Está seguro que desea importar ésta información?"
+                  content="Asegurese de cumplir con el formato de la tabla."
                 >
-                  <Icon name="plus circle" />
-                  Importar
-                </Form.Button>
+                  {onClick => (
+                    <Form.Button
+                      icon
+                      labelPosition="left"
+                      size="big"
+                      color="blue"
+                      onClick={() => onClick()}
+                    >
+                      <Icon name="plus circle" />
+                      Importar
+                    </Form.Button>
+                  )}
+                </Confirm>
 
                 <TextArea
                   ref={ref => {

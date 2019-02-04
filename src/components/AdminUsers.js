@@ -3,7 +3,15 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Table, Grid, Button, Icon } from "semantic-ui-react";
 import { adminGetUsers, adminMailLockedUsers } from "../actions";
-import { User, AdminImportUsers } from "./";
+import { User, AdminImportUsers, Confirm } from "./";
+
+const sortKeys = obj =>
+  map(obj, ({ email, name, locked, tries }) => ({
+    email,
+    name,
+    locked,
+    tries,
+  }));
 
 export class AdminUsers extends Component {
   constructor(props) {
@@ -23,7 +31,7 @@ export class AdminUsers extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (!isEqual(this.props.users, prevProps.users)) {
       this.setState({
-        users: sortBy(this.props.users, [this.state.column]),
+        users: sortKeys(sortBy(this.props.users, [this.state.column])),
       });
     }
   }
@@ -34,7 +42,7 @@ export class AdminUsers extends Component {
     if (column !== clickedColumn) {
       this.setState({
         column: clickedColumn,
-        users: sortBy(this.props.users, [clickedColumn]),
+        users: sortKeys(sortBy(this.props.users, [clickedColumn])),
         direction: "ascending",
       });
 
@@ -56,15 +64,23 @@ export class AdminUsers extends Component {
           <AdminImportUsers />
         </Grid.Row>
         <Grid.Row centered>
-          <Button
-            icon
-            labelPosition="left"
-            secondary
-            onClick={() => this.props.adminMailLockedUsers()}
+          <Confirm
+            onConfirm={() => this.props.adminMailLockedUsers()}
+            header="¿Está seguro que desea enviar un nuevo correo electrónico a todos los usuarios bloqueados?"
+            content="Se les va a asignar un nuevo código de activación en conjunto con el correo enviado a todos los usuarios bloqueados"
           >
-            <Icon name="mail" />
-            Enviar nuevo código de activación a todos los usuarios bloqueados
-          </Button>
+            {onClick => (
+              <Button
+                icon
+                labelPosition="left"
+                secondary
+                onClick={() => onClick()}
+              >
+                <Icon name="mail" />
+                Código nuevo a usuarios bloqueados
+              </Button>
+            )}
+          </Confirm>
         </Grid.Row>
         <Grid.Row centered>
           <Table
@@ -119,7 +135,11 @@ export class AdminUsers extends Component {
                             case "locked":
                               return (
                                 <Table.Cell key={k}>
-                                  {v ? (<Icon circular name="lock"></Icon>) : (<Icon circular name="lock open"></Icon>)}
+                                  {v ? (
+                                    <Icon circular name="lock" />
+                                  ) : (
+                                    <Icon circular name="lock open" />
+                                  )}
                                 </Table.Cell>
                               );
                             default:

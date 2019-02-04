@@ -4,8 +4,10 @@ import AdminImportUsers from "./AdminImportUsers";
 import AdminLogin from "./AdminLogin";
 import AdminPrograms from "./AdminPrograms";
 import AdminUsers from "./AdminUsers";
+import Confirm from "./Confirm";
 import Program from "./Program";
 import User from "./User";
+
 export {
   AdminPrograms,
   AdminUsers,
@@ -15,4 +17,5 @@ export {
   AdminImportUsers,
   AdminImportPrograms,
   AdminError,
+  Confirm,
 };

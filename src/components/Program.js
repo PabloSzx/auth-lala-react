@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Modal, Form, Grid, Button, Icon } from "semantic-ui-react";
 import { adminProgramUpdate, adminDeleteProgram } from "../actions";
+import { Confirm } from "./";
 
 export class Program extends Component {
   constructor(props) {
@@ -63,20 +64,28 @@ export class Program extends Component {
           {programProp.email}-{programProp.program}
         </Modal.Header>
         <Modal.Content>
-          <Button
-            circular
-            icon
-            secondary
-            style={{ position: "absolute", right: "0.5em", top: "0.5em" }}
-            onClick={() => {
+          <Confirm
+            header="¿Está seguro que desea resetear los campos del formulario a los obtenidos desde la base de datos?"
+            content="Cualquier cambio en los campos de información va a ser perdido"
+            onConfirm={() =>
               this.setState({
                 email: this.props.program.email,
                 program: this.props.program.program,
-              });
-            }}
+              })
+            }
           >
-            <Icon circular name="redo" />
-          </Button>
+            {onClick => (
+              <Button
+                circular
+                icon
+                secondary
+                style={{ position: "absolute", right: "0.5em", top: "0.5em" }}
+                onClick={() => onClick()}
+              >
+                <Icon circular name="redo" />
+              </Button>
+            )}
+          </Confirm>
 
           <Grid centered>
             <Form size="big">
@@ -100,29 +109,46 @@ export class Program extends Component {
                   style={{ width: "25em" }}
                 />
               </Form.Field>
-              <Button
-                icon
-                labelPosition="left"
-                primary
-                onClick={() => this.handleSubmit()}
+              <Confirm
+                header="¿Está seguro que desea guardar en la base de datos los cambios hechos en este programa?"
+                content="Si hace un cambio en el campo de email asegurese que en la tabla de usuarios exista el correo electrónico nuevo"
+                onConfirm={() => this.handleSubmit()}
               >
-                <Icon name="save outline" />
-                Guardar
-              </Button>
-              <Button
-                icon
-                labelPosition="left"
-                color="red"
-                onClick={() =>
+                {onClick => (
+                  <Button
+                    icon
+                    labelPosition="left"
+                    primary
+                    onClick={() => onClick()}
+                  >
+                    <Icon name="save outline" />
+                    Guardar
+                  </Button>
+                )}
+              </Confirm>
+              <Confirm
+                header="¿Está seguro que desea eliminar este programa?"
+                content="Éste se va a eliminar de la base de datos"
+                onConfirm={() => {
                   this.props.adminDeleteProgram({
                     email: programProp.email,
                     program: programProp.program,
-                  })
-                }
+                  });
+                  this.setState({ open: false });
+                }}
               >
-                <Icon name="remove circle" />
-                Eliminar
-              </Button>
+                {onClick => (
+                  <Button
+                    icon
+                    labelPosition="left"
+                    color="red"
+                    onClick={() => onClick()}
+                  >
+                    <Icon name="remove circle" />
+                    Eliminar
+                  </Button>
+                )}
+              </Confirm>
             </Form>
           </Grid>
         </Modal.Content>
