@@ -1,7 +1,8 @@
 import { isEmpty, isString, get } from "lodash";
+import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { fetchUser, logoutUser } from "../actions";
 import { Auth, RecoverPassword, Admin } from "./";
 
@@ -31,29 +32,33 @@ class App extends Component {
       !isEmpty(this.props.auth) &&
       !get(this.props.auth, "admin", false)
     ) {
-      window.location.replace(
+      const callback = get(
+        queryString.parse(this.props.location.search),
+        "callback",
+        false
+      );
+      const fallback =
         process.env.NODE_ENV === "development"
           ? `http://${window.location.hostname}:8080/home`
-          : `http://${window.location.host}/home`
-      );
+          : `http://${window.location.host}/home`;
+
+      window.location.replace(callback || fallback);
     }
   };
 
   render() {
     return (
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/admin" component={Admin} />
-          <Route exact path="/auth" component={Auth} />
-          <Route exact path="/logout" component={Logout} />
-          <Route
-            exact
-            path="/unlock/:email/:unlockKey"
-            component={RecoverPassword}
-          />
-          <Redirect from="/*" to="/auth" />
-        </Switch>
-      </BrowserRouter>
+      <Switch>
+        <Route exact path="/admin" component={Admin} />
+        <Route exact path="/auth" component={Auth} />
+        <Route exact path="/logout" component={Logout} />
+        <Route
+          exact
+          path="/unlock/:email/:unlockKey"
+          component={RecoverPassword}
+        />
+        <Redirect from="/*" to="/auth" />
+      </Switch>
     );
   }
 }
@@ -62,7 +67,9 @@ const mapStateToProps = ({ auth }, ownProps) => {
   return { auth };
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchUser }
-)(App);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { fetchUser }
+  )(App)
+);

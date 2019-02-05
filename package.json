@@ -10,6 +10,7 @@
     "http-proxy-middleware": "^0.19.1",
     "lodash": "^4.17.11",
     "prettyjson": "^1.2.1",
+    "query-string": "^6.2.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-dropzone": "^8.0.4",

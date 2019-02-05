@@ -1,6 +1,7 @@
 import { isEmpty, reduce } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import {
   Form,
   Checkbox,
@@ -211,7 +212,9 @@ const mapStateToProps = ({ auth, error }) => ({
 
 const mapDispatchToProps = { loginUser, loginUserNoSession, clearError };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Auth);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Auth)
+);
