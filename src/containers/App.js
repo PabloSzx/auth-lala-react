@@ -39,8 +39,8 @@ class App extends Component {
       );
       const fallback =
         process.env.NODE_ENV === "development"
-          ? `http://${window.location.hostname}:8080/`
-          : `http://${window.location.host}/`;
+          ? `http://${window.location.hostname}:8080/dashboard`
+          : `http://${window.location.host}/dashboard`;
 
       window.location.replace(callback || fallback);
     }
