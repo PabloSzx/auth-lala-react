@@ -14,10 +14,17 @@ export const fetchUser = callback => async dispatch => {
   });
 
   const res = await axios.post("/auth/current_user", { callback });
-  dispatch({
-    type: FETCH_USER,
-    payload: res.data,
-  });
+  if (res.data.redirect) {
+    dispatch({
+      type: REDIRECT,
+      payload: res.data.redirect,
+    });
+  } else {
+    dispatch({
+      type: FETCH_USER,
+      payload: res.data,
+    });
+  }
 };
 
 export const loginUser = ({ email, password, callback }) => async dispatch => {
