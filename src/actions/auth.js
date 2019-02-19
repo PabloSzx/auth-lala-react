@@ -8,12 +8,12 @@ import {
   REDIRECT,
 } from "../types";
 
-export const fetchUser = () => async dispatch => {
+export const fetchUser = callback => async dispatch => {
   dispatch({
     type: LOADING,
   });
 
-  const res = await axios.post("/auth/current_user");
+  const res = await axios.post("/auth/current_user", { callback });
   dispatch({
     type: FETCH_USER,
     payload: res.data,

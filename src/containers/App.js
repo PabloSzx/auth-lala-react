@@ -9,7 +9,17 @@ import { Auth, RecoverPassword, Admin } from "./";
 class LogoutComponent extends Component {
   componentWillMount() {
     this.props.logoutUser();
+    const callback = get(
+      queryString.parse(this.props.location.search),
+      "callback",
+      false
+    );
+
+    if (callback) {
+      window.location.replace(callback);
+    }
   }
+
   render() {
     return <Redirect to="/auth" />;
   }
@@ -22,7 +32,12 @@ const Logout = connect(
 
 class App extends Component {
   componentDidMount() {
-    this.props.fetchUser();
+    const callback = get(
+      queryString.parse(this.props.location.search),
+      "callback",
+      false
+    );
+    this.props.fetchUser(callback);
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -50,12 +65,6 @@ class App extends Component {
   };
 
   render() {
-    const callback = get(
-      queryString.parse(this.props.location.search),
-      "callback",
-      false
-    );
-    console.log("callback", callback);
     return (
       <Switch>
         <Route exact path="/admin" component={Admin} />
