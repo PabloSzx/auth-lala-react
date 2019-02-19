@@ -19,6 +19,7 @@ const ADMIN_GET_PROGRAMS = "admin_get_programs";
 const ADMIN_LOGIN = "admin_login";
 const ADMIN_FETCH = "admin_fetch";
 const ADMIN_ERROR = "admin_error";
+const REDIRECT = "redirect";
 
 export {
   LOGIN_USER,
@@ -42,4 +43,5 @@ export {
   ADMIN_LOGIN,
   ADMIN_FETCH,
   ADMIN_ERROR,
+  REDIRECT,
 };

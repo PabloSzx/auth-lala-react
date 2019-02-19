@@ -5,6 +5,7 @@ import {
   LOGOUT_USER,
   LOADING,
   CLEAR_ERROR,
+  REDIRECT,
 } from "../types";
 
 export const fetchUser = () => async dispatch => {
@@ -19,18 +20,29 @@ export const fetchUser = () => async dispatch => {
   });
 };
 
-export const loginUser = ({ email, password }) => async dispatch => {
+export const loginUser = ({ email, password, callback }) => async dispatch => {
   dispatch({
     type: LOADING,
   });
-  const res = await axios.post("/auth/login", { email, password });
-  dispatch({
-    type: LOGIN_USER,
-    payload: res.data,
-  });
+  const res = await axios.post("/auth/login", { email, password, callback });
+  if (res.data.redirect) {
+    dispatch({
+      type: REDIRECT,
+      payload: res.data.redirect,
+    });
+  } else {
+    dispatch({
+      type: LOGIN_USER,
+      payload: res.data,
+    });
+  }
 };
 
-export const loginUserNoSession = ({ email, password }) => async dispatch => {
+export const loginUserNoSession = ({
+  email,
+  password,
+  callback,
+}) => async dispatch => {
   dispatch({
     type: LOADING,
   });
@@ -38,11 +50,19 @@ export const loginUserNoSession = ({ email, password }) => async dispatch => {
   const res = await axios.post("/auth/login/no_session", {
     email,
     password,
+    callback,
   });
-  dispatch({
-    type: LOGIN_USER,
-    payload: res.data,
-  });
+  if (res.data.redirect) {
+    dispatch({
+      type: REDIRECT,
+      payload: res.data.redirect,
+    });
+  } else {
+    dispatch({
+      type: LOGIN_USER,
+      payload: res.data,
+    });
+  }
 };
 
 export const logoutUser = () => async dispatch => {

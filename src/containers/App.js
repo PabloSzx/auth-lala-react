@@ -26,6 +26,9 @@ class App extends Component {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
+    if (this.props.redirect) {
+      window.location.replace(this.props.redirect);
+    }
     if (
       prevProps.auth !== this.props.auth &&
       !isString(this.props.auth) &&
@@ -47,6 +50,12 @@ class App extends Component {
   };
 
   render() {
+    const callback = get(
+      queryString.parse(this.props.location.search),
+      "callback",
+      false
+    );
+    console.log("callback", callback);
     return (
       <Switch>
         <Route exact path="/admin" component={Admin} />
@@ -63,8 +72,8 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ auth }, ownProps) => {
-  return { auth };
+const mapStateToProps = ({ auth, redirect }, ownProps) => {
+  return { auth, redirect };
 };
 
 export default withRouter(

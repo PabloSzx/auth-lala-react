@@ -1,4 +1,5 @@
-import { isEmpty, reduce } from "lodash";
+import { isEmpty, reduce, get } from "lodash";
+import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -54,10 +55,17 @@ class Auth extends Component {
     email = trim(email);
     password = trim(sha1(password).toString());
 
+    const callback = get(
+      queryString.parse(this.props.location.search),
+      "callback",
+      false
+    );
+    console.log("callback aca es", callback);
+
     if (session) {
-      this.props.loginUser({ email, password });
+      this.props.loginUser({ email, password, callback });
     } else {
-      this.props.loginUserNoSession({ email, password });
+      this.props.loginUserNoSession({ email, password, callback });
     }
 
     this.setState({
@@ -70,7 +78,7 @@ class Auth extends Component {
   }
 
   validatePassword(password = this.state.password) {
-    return set("valid.password.all", isLength(password, { min: 8, max: 100 }));
+    return set("valid.password.all", isLength(password, { min: 3, max: 100 }));
   }
 
   validateAll(chain = false) {
