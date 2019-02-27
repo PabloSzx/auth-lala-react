@@ -37,9 +37,8 @@ export class Admin extends Component {
     ) : (
       <Grid centered key={"dashboard"}>
         <Grid.Row>
-          <Menu>
+          <Menu icon="labeled">
             <Menu.Item
-              icon="labeled"
               name="users"
               active={active === "users"}
               onClick={this.handleItemClick}
@@ -48,7 +47,6 @@ export class Admin extends Component {
               Usuarios
             </Menu.Item>
             <Menu.Item
-              icon="labeled"
               name="programs"
               active={active === "programs"}
               onClick={this.handleItemClick}

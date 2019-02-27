@@ -1,4 +1,5 @@
-import { reduce, cloneDeep, isEmpty } from "lodash";
+import { reduce, cloneDeep, isEmpty, isString, get } from "lodash";
+import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Form, Message, Grid, Segment, Input } from "semantic-ui-react";
@@ -34,6 +35,29 @@ class RecoverPassword extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    if (this.props.redirect) {
+      window.location.replace(this.props.redirect);
+    }
+    if (
+      prevProps.auth !== this.props.auth &&
+      !isString(this.props.auth) &&
+      !isEmpty(this.props.auth)
+    ) {
+      const callback = get(
+        queryString.parse(this.props.location.search),
+        "callback",
+        false
+      );
+      const fallback =
+        process.env.NODE_ENV === "development"
+          ? `http://${window.location.hostname}:8080/dashboard`
+          : `http://${window.location.host}/dashboard`;
+
+      window.location.replace(callback || fallback);
+    }
+  };
 
   validatePassword(
     password = this.state.password,
@@ -162,7 +186,7 @@ class RecoverPassword extends Component {
         </Grid.Row>
         <Grid.Row>
           <Segment size="large" basic>
-            <Message warning header="Precaución!" hidden={valid.password.all}>
+            <Message warning hidden={valid.password.all}>
               <Message.List>
                 {reduce(
                   valid,
@@ -177,13 +201,17 @@ class RecoverPassword extends Component {
                                 switch (k) {
                                   case "length": {
                                     a.push(
-                                      <Message.Item content="El largo de la contraseña tiene que ser de al menos 8 caracteres." />
+                                      <Message.Item
+                                        key={k + key}
+                                        content="El largo de la contraseña tiene que ser de al menos 8 caracteres."
+                                      />
                                     );
                                     break;
                                   }
                                   case "specialSymbol": {
                                     a.push(
                                       <Message.Item
+                                        key={k + key}
                                         content={`La contraseña debe contener al menos un caracter especial (~¡!$&+,:;=¿?@#|'<>.^*(){}"%-_).`}
                                       />
                                     );
@@ -191,25 +219,37 @@ class RecoverPassword extends Component {
                                   }
                                   case "lowercase": {
                                     a.push(
-                                      <Message.Item content="La contraseña debe contener al menos una letra minúscula." />
+                                      <Message.Item
+                                        key={k + key}
+                                        content="La contraseña debe contener al menos una letra minúscula."
+                                      />
                                     );
                                     break;
                                   }
                                   case "uppercase": {
                                     a.push(
-                                      <Message.Item content="La contraseña debe contener al menos una letra mayúscula." />
+                                      <Message.Item
+                                        key={k + key}
+                                        content="La contraseña debe contener al menos una letra mayúscula."
+                                      />
                                     );
                                     break;
                                   }
                                   case "number": {
                                     a.push(
-                                      <Message.Item content="La contraseña debe contener al menos un número." />
+                                      <Message.Item
+                                        key={k + key}
+                                        content="La contraseña debe contener al menos un número."
+                                      />
                                     );
                                     break;
                                   }
                                   case "confirm_password": {
                                     a.push(
-                                      <Message.Item content="Debe repetir su contraseña correctamente." />
+                                      <Message.Item
+                                        key={k + key}
+                                        content="Debe repetir su contraseña correctamente."
+                                      />
                                     );
                                     break;
                                   }
@@ -260,9 +300,10 @@ class RecoverPassword extends Component {
   }
 }
 
-const mapStateToProps = ({ auth, error }) => ({
+const mapStateToProps = ({ auth, error, redirect }) => ({
   auth,
   error,
+  redirect,
 });
 
 const mapDispatchToProps = { recoverPassword, clearError };

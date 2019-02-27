@@ -6,11 +6,12 @@ import { adminGetUsers, adminMailLockedUsers } from "../actions";
 import { User, AdminImportUsers, Confirm } from "./";
 
 const sortKeys = obj =>
-  map(obj, ({ email, name, locked, tries }) => ({
+  map(obj, ({ email, name, locked, tries, admin }) => ({
     email,
     name,
     locked,
     tries,
+    admin,
   }));
 
 export class AdminUsers extends Component {
@@ -142,6 +143,8 @@ export class AdminUsers extends Component {
                                   )}
                                 </Table.Cell>
                               );
+                            case "admin":
+                              return null;
                             default:
                               return <Table.Cell key={k}>{v}</Table.Cell>;
                           }

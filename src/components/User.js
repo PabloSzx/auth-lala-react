@@ -15,6 +15,7 @@ export class User extends Component {
       name: props.user.name,
       locked: props.user.locked,
       tries: props.user.tries,
+      admin: props.user.admin,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -27,7 +28,7 @@ export class User extends Component {
   }
 
   async handleSubmit() {
-    let { email, name, locked, tries, unlockKey } = this.state;
+    let { email, name, locked, tries, unlockKey, admin } = this.state;
     this.props.adminUserUpdate({
       old: {
         email: this.props.user.email,
@@ -37,6 +38,7 @@ export class User extends Component {
       locked,
       tries,
       unlockKey,
+      admin,
     });
     this.setState({ open: false });
   }
@@ -48,6 +50,7 @@ export class User extends Component {
         name: this.props.user.name,
         locked: this.props.user.locked,
         tries: this.props.user.tries,
+        admin: this.props.user.admin,
       });
     }
   }
@@ -56,7 +59,7 @@ export class User extends Component {
     const { open } = this.state;
     const { children, key, user } = this.props;
 
-    const { email, name, locked, tries } = this.state;
+    const { email, name, locked, tries, admin } = this.state;
 
     return (
       <Modal
@@ -126,8 +129,37 @@ export class User extends Component {
                 />
               </Form.Field>
               <Form.Field>
+                <Confirm
+                  header="¿Está seguro que desea cambiar el privilegio admin en este usuario?"
+                  content="Puede causar problemas en la administración del programa"
+                  onConfirm={() => {
+                    this.props.adminUserUpdate({
+                      old: {
+                        email: this.props.user.email,
+                      },
+                      ...this.props.user,
+                      admin: !admin,
+                    });
+                    this.setState({ open: false });
+                  }}
+                >
+                  {onClick => (
+                    <Checkbox
+                      name="admin"
+                      toggle
+                      checked={admin}
+                      label="Admin"
+                      onChange={() => onClick()}
+                      disabled={
+                        this.props.user.email === "pablosaez1995@gmail.com"
+                      }
+                    />
+                  )}
+                </Confirm>
+              </Form.Field>
+              <Form.Field>
                 <Checkbox
-                  name="locked"
+                  name="admin"
                   toggle
                   checked={locked}
                   label="Bloqueado"
@@ -135,6 +167,7 @@ export class User extends Component {
                   onChange={() => this.setState({ locked: !locked })}
                 />
               </Form.Field>
+
               <Confirm
                 header="¿Está seguro que desea guardar en la base de datos los cambios hechos en este usuario?"
                 content="Si hace un cambio en el campo de email asegurese que en la tabla de programas no hayan referencias al email anterior"

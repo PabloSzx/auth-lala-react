@@ -1,4 +1,4 @@
-import { isEmpty, reduce, get } from "lodash";
+import { isEmpty, reduce, get, isString } from "lodash";
 import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -47,6 +47,29 @@ class Auth extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    if (this.props.redirect) {
+      window.location.replace(this.props.redirect);
+    }
+    if (
+      prevProps.auth !== this.props.auth &&
+      !isString(this.props.auth) &&
+      !isEmpty(this.props.auth)
+    ) {
+      const callback = get(
+        queryString.parse(this.props.location.search),
+        "callback",
+        false
+      );
+      const fallback =
+        process.env.NODE_ENV === "development"
+          ? `http://${window.location.hostname}:8080/dashboard`
+          : `http://${window.location.host}/dashboard`;
+
+      window.location.replace(callback || fallback);
+    }
+  };
 
   async handleSubmit(event) {
     event.preventDefault();
@@ -213,9 +236,10 @@ class Auth extends Component {
   }
 }
 
-const mapStateToProps = ({ auth, error }) => ({
+const mapStateToProps = ({ auth, error, redirect }) => ({
   auth,
   error,
+  redirect,
 });
 
 const mapDispatchToProps = { loginUser, loginUserNoSession, clearError };

@@ -1,4 +1,4 @@
-import { isEmpty, isString, get } from "lodash";
+import { get } from "lodash";
 import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -39,30 +39,6 @@ class App extends Component {
     );
     this.props.fetchUser(callback);
   }
-
-  componentDidUpdate = (prevProps, prevState) => {
-    if (this.props.redirect) {
-      window.location.replace(this.props.redirect);
-    }
-    if (
-      prevProps.auth !== this.props.auth &&
-      !isString(this.props.auth) &&
-      !isEmpty(this.props.auth) &&
-      !get(this.props.auth, "admin", false)
-    ) {
-      const callback = get(
-        queryString.parse(this.props.location.search),
-        "callback",
-        false
-      );
-      const fallback =
-        process.env.NODE_ENV === "development"
-          ? `http://${window.location.hostname}:8080/dashboard`
-          : `http://${window.location.host}/dashboard`;
-
-      window.location.replace(callback || fallback);
-    }
-  };
 
   render() {
     return (

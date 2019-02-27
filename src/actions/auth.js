@@ -1,11 +1,11 @@
 import axios from "axios";
 import {
-  FETCH_USER,
   LOGIN_USER,
   LOGOUT_USER,
   LOADING,
   CLEAR_ERROR,
   REDIRECT,
+  FETCH_USER,
 } from "../types";
 
 export const fetchUser = callback => async dispatch => {
