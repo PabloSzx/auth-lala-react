@@ -126,6 +126,12 @@ export class AdminUsers extends Component {
               {map(users, (value, key) => (
                 <User key={key} user={value}>
                   {({ onClick }) => {
+                    if (
+                      value.email === "pablosaez1995@gmail.com" &&
+                      this.props.auth.email !== "pablosaez1995@gmail.com"
+                    ) {
+                      return null;
+                    }
                     return (
                       <Table.Row
                         onClick={onClick}
@@ -162,7 +168,8 @@ export class AdminUsers extends Component {
   }
 }
 
-const mapStateToProps = ({ admin: { users = [] } }) => ({
+const mapStateToProps = ({ auth, admin: { users = [] } }) => ({
+  auth,
   users,
 });
 
