@@ -16,7 +16,9 @@ class LogoutComponent extends Component {
     );
 
     if (callback) {
-      window.location.replace(callback);
+      window.location.replace(
+        "https://" + (callback || "trac.uach.lalaproject.org/")
+      );
     }
   }
 
@@ -37,6 +39,7 @@ class App extends Component {
       "callback",
       false
     );
+
     this.props.fetchUser(callback);
   }
 

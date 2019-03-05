@@ -50,7 +50,7 @@ class Auth extends Component {
 
   componentDidUpdate = (prevProps, prevState) => {
     if (this.props.redirect) {
-      window.location.replace(this.props.redirect);
+      window.location.replace("https://" + this.props.redirect);
     }
     if (
       prevProps.auth !== this.props.auth &&
@@ -62,12 +62,10 @@ class Auth extends Component {
         "callback",
         false
       );
-      const fallback =
-        process.env.NODE_ENV === "development"
-          ? `http://${window.location.hostname}:8080/dashboard`
-          : `http://${window.location.host}/dashboard`;
 
-      window.location.replace(callback || fallback);
+      window.location.replace(
+        "https://" + (callback || "trac.uach.lalaproject.org/")
+      );
     }
   };
 

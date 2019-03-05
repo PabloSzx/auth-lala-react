@@ -32,6 +32,7 @@ export const loginUser = ({ email, password, callback }) => async dispatch => {
     type: LOADING,
   });
   const res = await axios.post("/auth/login", { email, password, callback });
+
   if (res.data.redirect) {
     dispatch({
       type: REDIRECT,
