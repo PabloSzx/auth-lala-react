@@ -40,7 +40,7 @@ class RecoverPassword extends Component {
 
   componentDidUpdate = (prevProps, prevState) => {
     if (this.props.redirect) {
-      window.location.replace("https://" + this.props.redirect);
+      window.location.replace(this.props.redirect);
     }
     if (
       prevProps.auth !== this.props.auth &&
@@ -53,9 +53,7 @@ class RecoverPassword extends Component {
         false
       );
 
-      window.location.replace(
-        "https://" + (callback || "trac.uach.lalaproject.org/")
-      );
+      window.location.replace(callback || "https://trac.uach.lalaproject.org/");
     }
   };
 

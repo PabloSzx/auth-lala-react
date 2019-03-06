@@ -16,9 +16,7 @@ class LogoutComponent extends Component {
     );
 
     if (callback) {
-      window.location.replace(
-        "https://" + (callback || "trac.uach.lalaproject.org/")
-      );
+      window.location.replace(callback || "https://trac.uach.lalaproject.org/");
     }
   }
 
