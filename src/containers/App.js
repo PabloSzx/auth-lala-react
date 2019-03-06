@@ -33,16 +33,6 @@ const Logout = connect(
 )(LogoutComponent);
 
 class App extends Component {
-  componentDidMount() {
-    const callback = get(
-      queryString.parse(this.props.location.search),
-      "callback",
-      false
-    );
-
-    this.props.fetchUser(callback);
-  }
-
   render() {
     return (
       <Switch>

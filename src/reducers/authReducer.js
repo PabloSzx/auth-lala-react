@@ -14,7 +14,7 @@ export default (state = {}, { type, payload }) => {
       return auth;
     }
     case LOGOUT_USER: {
-      return auth;
+      return {};
     }
     default:
       return state;

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { Form, Message, Grid, Segment, Input } from "semantic-ui-react";
 import validator, { trim } from "validator";
 import sha1 from "crypto-js/sha1";
-import { recoverPassword, clearError } from "../actions/auth";
+import { recoverPassword, clearError, logoutUser } from "../actions/auth";
 import {
   LOADING,
   USER_NOT_LOCKED,
@@ -31,6 +31,8 @@ class RecoverPassword extends Component {
         },
       },
     };
+
+    this.props.logoutUser();
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -304,7 +306,7 @@ const mapStateToProps = ({ auth, error, redirect }) => ({
   redirect,
 });
 
-const mapDispatchToProps = { recoverPassword, clearError };
+const mapDispatchToProps = { recoverPassword, clearError, logoutUser };
 
 export default connect(
   mapStateToProps,

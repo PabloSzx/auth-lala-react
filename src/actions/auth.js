@@ -75,14 +75,10 @@ export const loginUserNoSession = ({
 
 export const logoutUser = () => async dispatch => {
   dispatch({
-    type: LOADING,
+    type: LOGOUT_USER,
   });
 
-  const res = await axios.post("/auth/logout");
-  dispatch({
-    type: LOGOUT_USER,
-    payload: res.data,
-  });
+  axios.post("/auth/logout");
 };
 
 export const signupUser = ({ email, name, password }) => async dispatch => {

@@ -1,6 +1,5 @@
 import { get } from "lodash";
 import React, { Component } from "react";
-
 import { connect } from "react-redux";
 import { Grid, Menu, Icon } from "semantic-ui-react";
 import { adminGetPrograms, adminGetUsers, fetchUser } from "../actions";

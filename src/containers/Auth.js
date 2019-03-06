@@ -15,7 +15,12 @@ import {
 import { isEmail, trim, isLength } from "validator";
 import sha1 from "crypto-js/sha1";
 import { set } from "lodash/fp";
-import { loginUser, loginUserNoSession, clearError } from "../actions";
+import {
+  loginUser,
+  loginUserNoSession,
+  clearError,
+  fetchUser,
+} from "../actions";
 import {
   INVALID_INFO,
   LOCKED_USER,
@@ -46,6 +51,16 @@ class Auth extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const callback = get(
+      queryString.parse(this.props.location.search),
+      "callback",
+      false
+    );
+
+    this.props.fetchUser(callback);
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -240,7 +255,12 @@ const mapStateToProps = ({ auth, error, redirect }) => ({
   redirect,
 });
 
-const mapDispatchToProps = { loginUser, loginUserNoSession, clearError };
+const mapDispatchToProps = {
+  loginUser,
+  loginUserNoSession,
+  clearError,
+  fetchUser,
+};
 
 export default withRouter(
   connect(
