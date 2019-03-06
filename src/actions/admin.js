@@ -4,6 +4,7 @@ import {
   ADMIN_GET_USERS,
   ADMIN_LOGIN,
   ADMIN_FETCH,
+  ADMIN_GET_TRACKING,
 } from "../types";
 
 export const adminGetUsers = () => async dispatch => {
@@ -19,6 +20,15 @@ export const adminGetPrograms = () => async dispatch => {
 
   dispatch({
     type: ADMIN_GET_PROGRAMS,
+    payload: res.data,
+  });
+};
+
+export const adminGetTracking = () => async dispatch => {
+  const res = await axios.post("/admin/get_tracking");
+
+  dispatch({
+    type: ADMIN_GET_TRACKING,
     payload: res.data,
   });
 };

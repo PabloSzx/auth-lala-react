@@ -20,6 +20,7 @@ const ADMIN_LOGIN = "admin_login";
 const ADMIN_FETCH = "admin_fetch";
 const ADMIN_ERROR = "admin_error";
 const REDIRECT = "redirect";
+const ADMIN_GET_TRACKING = "admin_get_tracking";
 
 export {
   LOGIN_USER,
@@ -44,4 +45,5 @@ export {
   ADMIN_FETCH,
   ADMIN_ERROR,
   REDIRECT,
+  ADMIN_GET_TRACKING,
 };

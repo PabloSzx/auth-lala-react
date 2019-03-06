@@ -11,6 +11,7 @@ import {
   adminMailLockedUsers,
   adminDeleteProgram,
   adminDeleteUser,
+  adminGetTracking,
 } from "./admin";
 
 import {
@@ -43,4 +44,5 @@ export {
   adminMailLockedUsers,
   adminDeleteProgram,
   adminDeleteUser,
+  adminGetTracking,
 };

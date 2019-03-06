@@ -9,6 +9,7 @@ import {
   AdminUsers,
   AdminError,
   AdminLogin,
+  AdminTracking,
 } from "../components";
 
 export class Admin extends Component {
@@ -16,7 +17,7 @@ export class Admin extends Component {
     super(props);
 
     this.state = {
-      active: "users",
+      active: window.localStorage.getItem("active-tab-admin") || "users",
     };
   }
 
@@ -27,7 +28,10 @@ export class Admin extends Component {
     this.props.adminGetUsers();
   }
 
-  handleItemClick = (e, { name }) => this.setState({ active: name });
+  handleItemClick = (e, { name }) => {
+    this.setState({ active: name });
+    window.localStorage.setItem("active-tab-admin", name);
+  };
 
   render() {
     const { active } = this.state;
@@ -54,6 +58,14 @@ export class Admin extends Component {
               <Icon name="table" />
               Programas
             </Menu.Item>
+            <Menu.Item
+              name="tracking"
+              active={active === "tracking"}
+              onClick={this.handleItemClick}
+            >
+              <Icon name="chart line" />
+              Tracking
+            </Menu.Item>
           </Menu>
         </Grid.Row>
         <Grid.Row>
@@ -66,6 +78,8 @@ export class Admin extends Component {
                 return <AdminUsers />;
               case "programs":
                 return <AdminPrograms />;
+              case "tracking":
+                return <AdminTracking />;
               default:
                 return null;
             }
