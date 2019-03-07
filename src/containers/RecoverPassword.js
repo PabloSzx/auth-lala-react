@@ -53,7 +53,9 @@ class RecoverPassword extends Component {
         false
       );
 
-      window.location.replace(callback || "https://trac.uach.lalaproject.org/");
+      window.location.replace(
+        callback || "https://trac.uach.lalaproject.org:81/"
+      );
     }
   };
 
