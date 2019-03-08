@@ -1,7 +1,7 @@
-import { map, isEqual, sortBy } from "lodash";
+import { map, isEqual, sortBy, size, slice } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Table, Grid } from "semantic-ui-react";
+import { Table, Grid, Pagination } from "semantic-ui-react";
 import { adminGetTracking } from "../actions";
 
 class AdminTracking extends Component {
@@ -12,13 +12,52 @@ class AdminTracking extends Component {
       column: null,
       tracking: props.tracking,
       direction: null,
+      activePage: window.localStorage.getItem("active-tracking-page") || 1,
+      totalPages: window.localStorage.getItem("total-tracking-pages") || 1,
     };
   }
 
+  componentDidMount() {
+    this.props.adminGetTracking();
+    const tracking = sortBy(
+      this.props.tracking,
+      this.state.column === "id" ? v => parseInt(v.id) : [this.state.column]
+    );
+    const activePage = this.state.activePage;
+    const nPerPage = 50;
+    const totalPages = Math.ceil(size(tracking) / nPerPage);
+    window.localStorage.setItem("total-tracking-pages", totalPages);
+
+    this.setState({
+      tracking: slice(
+        tracking,
+        nPerPage * (activePage - 1),
+        nPerPage * activePage
+      ),
+      totalPages,
+    });
+  }
+
   componentDidUpdate(prevProps, prevState) {
-    if (!isEqual(this.props.tracking, prevProps.tracking)) {
+    if (
+      this.state.activePage !== prevState.activePage ||
+      !isEqual(this.props.tracking, prevProps.tracking)
+    ) {
+      const tracking = sortBy(
+        this.props.tracking,
+        this.state.column === "id" ? v => parseInt(v.id) : [this.state.column]
+      );
+      const activePage = this.state.activePage;
+      const nPerPage = 50;
+      const totalPages = Math.ceil(size(tracking) / nPerPage);
+      window.localStorage.setItem("total-tracking-pages", totalPages);
       this.setState({
-        tracking: sortBy(this.props.tracking, [this.state.column]),
+        tracking: slice(
+          tracking,
+          nPerPage * (activePage - 1),
+          nPerPage * activePage
+        ),
+        totalPages,
       });
     }
   }
@@ -29,7 +68,10 @@ class AdminTracking extends Component {
     if (column !== clickedColumn) {
       this.setState({
         column: clickedColumn,
-        tracking: sortBy(this.props.tracking, [clickedColumn]),
+        tracking: sortBy(
+          this.props.tracking,
+          clickedColumn === "id" ? v => parseInt(v.id) : [clickedColumn]
+        ),
         direction: "ascending",
       });
 
@@ -42,16 +84,22 @@ class AdminTracking extends Component {
     });
   };
 
-  componentDidMount() {
-    this.props.adminGetTracking();
-  }
-
   render() {
-    const { tracking, column, direction } = this.state;
+    const { tracking, column, direction, activePage, totalPages } = this.state;
 
     return (
-      <Grid>
-        <Grid.Row centered>
+      <Grid centered>
+        <Grid.Row>
+          <Pagination
+            activePage={activePage}
+            totalPages={totalPages}
+            onPageChange={(e, { activePage }) => {
+              this.setState({ activePage });
+              window.localStorage.setItem("active-tracking-page", activePage);
+            }}
+          />
+        </Grid.Row>
+        <Grid.Row>
           <Table
             padded
             selectable
