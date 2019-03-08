@@ -128,7 +128,7 @@ export class AdminUsers extends Component {
                   {({ onClick }) => {
                     if (
                       value.email === "pablosaez1995@gmail.com" &&
-                      this.props.auth.email !== "pablosaez1995@gmail.com"
+                      this.props.auth.user !== "pablosaez1995@gmail.com"
                     ) {
                       return null;
                     }

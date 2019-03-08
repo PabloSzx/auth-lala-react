@@ -96,7 +96,6 @@ class Auth extends Component {
       "callback",
       false
     );
-    console.log("callback aca es", callback);
 
     if (session) {
       this.props.loginUser({ email, password, callback });
@@ -104,9 +103,14 @@ class Auth extends Component {
       this.props.loginUserNoSession({ email, password, callback });
     }
 
-    this.setState({
-      password: "",
-    });
+    this.setState(
+      {
+        password: "",
+      },
+      () => {
+        this.validateAll(true);
+      }
+    );
   }
 
   validateEmail(email = this.state.email) {
