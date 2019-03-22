@@ -152,7 +152,7 @@ class AdminTracking extends Component {
 
             <Table.Body>
               {map(tracking, (value, key) => (
-                <Table.Row style={{ cursor: "pointer" }}>
+                <Table.Row key={key} style={{ cursor: "pointer" }}>
                   {map(value, (v, k) => (
                     <Table.Cell key={k}>{v}</Table.Cell>
                   ))}
