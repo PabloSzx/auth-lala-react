@@ -78,9 +78,7 @@ class Auth extends Component {
         false
       );
 
-      window.location.replace(
-        callback || "https://trac.uach.lalaproject.org:81/"
-      );
+      window.location.replace(callback || "http://146.83.216.180:81/");
     }
   };
 
