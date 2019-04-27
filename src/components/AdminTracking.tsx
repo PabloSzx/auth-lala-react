@@ -17,7 +17,7 @@ const AdminTracking = ({
         case "GET_TRACKING_DATA":
           return {
             ...state,
-            trackingPage: tracking[state.activePage],
+            trackingPage: tracking[state.activePage - 1],
             totalPages: _.size(tracking),
             column: null,
             direction: null,
@@ -40,7 +40,7 @@ const AdminTracking = ({
           return {
             ...state,
             activePage: action.payload,
-            trackingPage: tracking[action.payload],
+            trackingPage: tracking[action.payload - 1],
             column: null,
             direction: null,
           };
