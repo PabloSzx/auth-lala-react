@@ -16,7 +16,9 @@ class LogoutComponent extends Component {
     );
 
     if (callback) {
-      window.location.replace(callback || "https//146.83.216.180:81/");
+      window.location.replace(
+        callback || "https://dashboard.trac.lala-uach.online/"
+      );
     }
   }
 
